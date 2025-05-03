@@ -32,7 +32,8 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+
+        return grid[position.getRow()][position.getColumn()];
     }
 
     /**
@@ -40,6 +41,11 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+
+        for(int i=0; i<8; i++){
+            for (int j=0; j<8; j++){
+                grid[i][j] = null;
+            }
+        }
     }
 }
