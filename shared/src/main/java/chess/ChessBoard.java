@@ -8,8 +8,9 @@ package chess;
  */
 public class ChessBoard {
 
+    private ChessPiece [][] grid = new ChessPiece[8][8];
+
     public ChessBoard() {
-        
     }
 
     /**
