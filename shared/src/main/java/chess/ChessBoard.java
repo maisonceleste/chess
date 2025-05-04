@@ -52,7 +52,8 @@ public class ChessBoard {
     public boolean equals(ChessBoard compareGrid){
         for(int i=0; i<8; i++){
             for (int j=0; j<8; j++){
-                if (!this.getPiece(ChessPosition(i,j)).equals(compareGrid.getPiece(ChessPosition(i,j)))){
+                ChessPosition currentPosition = new ChessPosition(i,j);
+                if (!this.getPiece(currentPosition).equals(compareGrid.getPiece(currentPosition))){
                     return false;
                 }
             }
