@@ -94,8 +94,6 @@ public class ChessBoard {
         ChessBoard other = (ChessBoard) compare;
         for(int i=0; i<8; i++){
             for (int j=0; j<8; j++){
-                System.out.println(grid[i][j]+" compared to");
-                System.out.println(other.grid[i][j]);
                 if (!Objects.equals(grid[i][j], other.grid[i][j])){
                     return false;
                 }
