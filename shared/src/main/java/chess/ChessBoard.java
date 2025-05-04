@@ -44,25 +44,25 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        grid[0][0]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        grid[0][7]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        grid[0][1]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        grid[0][6]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        grid[0][2]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        grid[0][5]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        grid[0][3]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-        grid[0][4]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
-        grid[7][0]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-        grid[7][7]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-        grid[7][1]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        grid[7][6]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        grid[7][2]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        grid[7][5]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        grid[7][3]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        grid[7][4]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        grid[0][0]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        grid[0][7]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        grid[0][1]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        grid[0][6]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        grid[0][2]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        grid[0][5]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        grid[0][3]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        grid[0][4]= new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        grid[7][0]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        grid[7][7]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        grid[7][1]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        grid[7][6]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        grid[7][2]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        grid[7][5]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        grid[7][3]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        grid[7][4]= new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
         for (int j=0; j<8; j++){
-            grid[1][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
-            grid[6][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);;
+            grid[1][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            grid[6][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
         for(int i=2; i<6; i++){
             for (int j=0; j<8; j++){
@@ -92,9 +92,11 @@ public class ChessBoard {
             return false;
         }
         ChessBoard other = (ChessBoard) compare;
-        for(int i=2; i<6; i++){
+        for(int i=0; i<8; i++){
             for (int j=0; j<8; j++){
-                if (grid[i][j]!=other.grid[i][j]){
+                System.out.println(grid[i][j]+" compared to");
+                System.out.println(other.grid[i][j]);
+                if (!Objects.equals(grid[i][j], other.grid[i][j])){
                     return false;
                 }
             }
