@@ -8,8 +8,8 @@ package chess;
  */
 public class ChessPosition {
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public ChessPosition(int row, int col) {
         this.x = col;
@@ -30,5 +30,9 @@ public class ChessPosition {
      */
     public int getColumn() {
         return x;
+    }
+
+    public boolean equals(ChessPosition comparePosition){
+        return (this.getRow() == comparePosition.getRow()) && (this.getColumn() == comparePosition.getColumn());
     }
 }

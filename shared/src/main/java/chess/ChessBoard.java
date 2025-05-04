@@ -8,7 +8,7 @@ package chess;
  */
 public class ChessBoard {
 
-    private ChessPiece [][] grid = new ChessPiece[8][8];
+    private final ChessPiece [][] grid = new ChessPiece[8][8];
 
     public ChessBoard() {
     }
@@ -21,7 +21,7 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
 
-        grid[position.getRow()][position.getColumn()] = piece;
+        grid[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -33,7 +33,7 @@ public class ChessBoard {
      */
     public ChessPiece getPiece(ChessPosition position) {
 
-        return grid[position.getRow()][position.getColumn()];
+        return grid[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -47,5 +47,16 @@ public class ChessBoard {
                 grid[i][j] = null;
             }
         }
+    }
+
+    public boolean equals(ChessBoard compareGrid){
+        for(int i=0; i<8; i++){
+            for (int j=0; j<8; j++){
+                if (!this.getPiece(ChessPosition(i,j)).equals(compareGrid.getPiece(ChessPosition(i,j)))){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
