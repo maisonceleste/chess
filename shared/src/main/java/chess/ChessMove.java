@@ -12,11 +12,13 @@ public class ChessMove {
 
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;
+    private final ChessPiece.PieceType promotionPiece;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPosition=startPosition;
         this.endPosition=endPosition;
+        this.promotionPiece=promotionPiece;
     }
 
     /**
@@ -53,11 +55,13 @@ public class ChessMove {
         if (!(o instanceof ChessMove chessMove)) {
             return false;
         }
-        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition);
+        return Objects.equals(startPosition, chessMove.startPosition) &&
+                Objects.equals(endPosition, chessMove.endPosition) &&
+                Objects.equals(promotionPiece, chessMove.promotionPiece);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPosition, endPosition);
+        return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 }
