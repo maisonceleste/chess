@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -56,5 +57,27 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         return new ArrayList<>();
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "color=" + color +
+                ", type=" + type +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object comparePiece){
+        if(!(comparePiece instanceof ChessPiece)){return false;}
+        if(this == comparePiece){return true;}
+
+        ChessPiece confirmedComparePiece = (ChessPiece) comparePiece;
+        return this.getPieceType()==confirmedComparePiece.getPieceType() && this.getTeamColor()==confirmedComparePiece.getTeamColor();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, type);
     }
 }
