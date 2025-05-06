@@ -77,3 +77,19 @@ class RookMovesCalculator implements PieceMovesCalculator {
         return moves;
     }
 }
+
+class QueenMovesCalculator implements PieceMovesCalculator {
+    @Override
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        moves.addAll(scanPattern(board, position, color, 1, 0));
+        moves.addAll(scanPattern(board, position, color, -1, 0));
+        moves.addAll(scanPattern(board, position, color, 0, -1));
+        moves.addAll(scanPattern(board, position, color, 0, 1));
+        moves.addAll(scanPattern(board, position, color, 1, 1));
+        moves.addAll(scanPattern(board, position, color, 1, -1));
+        moves.addAll(scanPattern(board, position, color, -1, -1));
+        moves.addAll(scanPattern(board, position, color, -1, 1));
+        return moves;
+    }
+}

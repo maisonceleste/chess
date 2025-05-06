@@ -59,11 +59,14 @@ public class ChessPiece {
         if(type==PieceType.KING){
             return new KingMovesCalculator().pieceMoves(board, myPosition, color);
         }
-        if(type==PieceType.BISHOP){
+        else if(type==PieceType.BISHOP){
             return new BishopMovesCalculator().pieceMoves(board, myPosition, color);
         }
-        if(type==PieceType.ROOK){
+        else if(type==PieceType.ROOK){
             return new RookMovesCalculator().pieceMoves(board, myPosition, color);
+        }
+        else if(type==PieceType.QUEEN){
+            return new QueenMovesCalculator().pieceMoves(board, myPosition, color);
         }
 
         return new ArrayList<>();
