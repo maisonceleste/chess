@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public interface PieceMovesCalculator {
@@ -90,6 +91,25 @@ class QueenMovesCalculator implements PieceMovesCalculator {
         moves.addAll(scanPattern(board, position, color, 1, -1));
         moves.addAll(scanPattern(board, position, color, -1, -1));
         moves.addAll(scanPattern(board, position, color, -1, 1));
+        return moves;
+    }
+}
+
+class KnightMovesCalculator implements PieceMovesCalculator {
+    @Override
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        int row = position.getRow();
+        int col = position.getColumn();
+        ArrayList<ChessPosition> endPositions = new ArrayList<>(Arrays.asList(new ChessPosition(row+1, col+2),
+                new ChessPosition(row+1, col-2), new ChessPosition(row-1, col+2), new ChessPosition(row-1, col-2),
+                new ChessPosition(row+2, col+1), new ChessPosition(row+2, col-1), new ChessPosition(row-2, col+1),
+                new ChessPosition(row-2, col-1)));
+        for(ChessPosition newPosition: endPositions){
+            if(!outOfBounds(newPosition) && (board.getPiece(newPosition)== null || !board.getPiece(newPosition).getTeamColor().equals(color))){
+                moves.add(new ChessMove(position, newPosition, null));
+            }
+        }
         return moves;
     }
 }
