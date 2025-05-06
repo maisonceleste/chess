@@ -52,16 +52,12 @@ class KingMovesCalculator implements PieceMovesCalculator{
         return moves;
     }
 
-    private boolean allowedMove(ChessBoard board, ChessMove move){
-        return true;
-    }
 }
 
 class BishopMovesCalculator implements PieceMovesCalculator{
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
         ArrayList<ChessMove> moves = new ArrayList<>();
-        ChessMove current;
         moves.addAll(scanPattern(board, position, color, 1, 1));
         moves.addAll(scanPattern(board, position, color, 1, -1));
         moves.addAll(scanPattern(board, position, color, -1, -1));
@@ -70,17 +66,14 @@ class BishopMovesCalculator implements PieceMovesCalculator{
     }
 }
 
-//class KnightMovesCalculator implements PieceMovesCalculator {
-//    @Override
-//    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
-//        ArrayList<ChessMove> moves = new ArrayList<>();
-//        ChessMove current;
-//        ChessPosition newPosition = new ChessPosition(position.getRow(), position.getColumn() + 1);
-//        while(true){
-//            if(outOfBounds(newPosition) || canCapture(board, newPosition, color)){break;}
-//            moves.add(new ChessMove(position, newPosition, null));
-//            if(board.getPiece(newPosition)!= null && !board.getPiece(newPosition).getTeamColor().equals(color)){break;}
-//            newPosition = new ChessPosition(newPosition.getRow(), newPosition.getColumn() + 1);
-//        }
-//    }
-//}
+class RookMovesCalculator implements PieceMovesCalculator {
+    @Override
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position, ChessGame.TeamColor color) {
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        moves.addAll(scanPattern(board, position, color, 1, 0));
+        moves.addAll(scanPattern(board, position, color, -1, 0));
+        moves.addAll(scanPattern(board, position, color, 0, -1));
+        moves.addAll(scanPattern(board, position, color, 0, 1));
+        return moves;
+    }
+}
