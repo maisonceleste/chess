@@ -120,7 +120,7 @@ class PawnMovesCalculator implements PieceMovesCalculator {
         ArrayList<ChessMove> moves = new ArrayList<>();
         int direction = 1;
         if (color == ChessGame.TeamColor.BLACK){direction = -1;}
-
+        //diagonal moves
         ChessPosition newPosition = new ChessPosition(position.getRow()+direction, position.getColumn()+1);
         if (!outOfBounds(newPosition) && canCapture(board, newPosition, color)) {
             moves.addAll(promotionGenerator(new ChessMove(position, newPosition, null), color));
@@ -129,7 +129,7 @@ class PawnMovesCalculator implements PieceMovesCalculator {
         if (!outOfBounds(newPosition) && canCapture(board, newPosition, color)) {
             moves.addAll(promotionGenerator(new ChessMove(position, newPosition, null), color));
         }
-
+        //forward moves
         newPosition = new ChessPosition(position.getRow()+direction, position.getColumn());
         if(board.getPiece(newPosition) == null){
             moves.addAll(promotionGenerator(new ChessMove(position, newPosition, null), color));
@@ -148,7 +148,6 @@ class PawnMovesCalculator implements PieceMovesCalculator {
 
     private Collection<ChessMove> promotionGenerator(ChessMove move, ChessGame.TeamColor color){
         ArrayList<ChessMove> moves = new ArrayList<>();
-
         int finalRow = move.getEndPosition().getRow();
         if((finalRow==8 && color==ChessGame.TeamColor.WHITE) || (finalRow==1 && color==ChessGame.TeamColor.BLACK)){
             moves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.QUEEN));
