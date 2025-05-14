@@ -51,7 +51,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        // I will add code to check for check or check mate later, I just need to get the other code working :)
+        return board.getPiece(startPosition).pieceMoves(board, startPosition);
     }
 
     /**
@@ -61,7 +62,15 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        if(!validMoves(move.getStartPosition()).contains(move)){
+            throw new InvalidMoveException("This piece cannot make this move at this time");
+        }
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        board.addPiece(move.getEndPosition(), piece);
+        //have to
+        board.addPiece(move.getStartPosition(), null);
+        if(teamTurn==TeamColor.BLACK){teamTurn=TeamColor.WHITE;}
+        else{teamTurn=TeamColor.BLACK;}
     }
 
     /**
@@ -74,9 +83,10 @@ public class ChessGame {
         ChessPosition kingPosition= new ChessPosition(0,0);
         ChessPosition currentPosition;
         ArrayList<ChessMove> allPossibleMovesList = new ArrayList<>();
-        for(int i=0; i<8; i++){
-            for (int j=0; j<8; j++){
+        for(int i=1; i<=8; i++){
+            for (int j=1; j<=8; j++){
                 currentPosition= new ChessPosition(i,j);
+                if(board.getPiece(currentPosition) == null){continue;}
                 if (board.getPiece(currentPosition).getTeamColor() !=teamColor){
                     allPossibleMovesList.addAll(board.getPiece(currentPosition).pieceMoves(board, currentPosition));
                 }
@@ -86,7 +96,8 @@ public class ChessGame {
             }
         }
         for(ChessMove move:allPossibleMovesList){
-            if(move.getEndPosition()==kingPosition){
+            currentPosition= move.getEndPosition();
+            if(currentPosition.equals(kingPosition)){
                 return true;
             }
         }
@@ -113,9 +124,10 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         ChessPosition currentPosition;
         ArrayList<ChessMove> allPossibleMovesList = new ArrayList<>();
-        for(int i=0; i<8; i++){
-            for (int j=0; j<8; j++){
+        for(int i=1; i<=8; i++){
+            for (int j=1; j<=8; j++){
                 currentPosition= new ChessPosition(i,j);
+                if(board.getPiece(currentPosition) == null){continue;}
                 if (board.getPiece(currentPosition).getTeamColor() !=teamColor){
                     allPossibleMovesList.addAll(board.getPiece(currentPosition).pieceMoves(board, currentPosition));
                 }

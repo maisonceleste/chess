@@ -46,4 +46,12 @@ public class ChessPosition {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    @Override
+    public String toString() {
+        return "ChessPosition{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
