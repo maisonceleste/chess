@@ -106,4 +106,14 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(grid);
     }
+
+    public ChessBoard deepCopy(){
+        ChessBoard newBoard = new ChessBoard();
+        for(int i=0; i<8; i++){
+            for (int j=0; j<8; j++){
+                newBoard.grid[i][j] = this.grid[i][j].deepCopy();
+            }
+        }
+        return newBoard;
+    }
 }

@@ -54,8 +54,23 @@ public class ChessGame {
         // I will add code to check for check or check mate later, I just need to get the other code working :)
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece thisPiece =  board.getPiece(startPosition);
-        if(thisPiece==null || thisPiece.getTeamColor()!=teamTurn){return moves;};
+        if(thisPiece==null || thisPiece.getTeamColor()!=teamTurn){return moves;}
+        for(int i=0; i<moves.size(); i++){
+            if(doesMoveCauseCheck(moves.get(i))){
+                moves.remove(i);
+                i--;
+            }
+        }
         return thisPiece.pieceMoves(board, startPosition);
+    }
+
+    private boolean doesMoveCauseCheck(ChessMove move){
+        ChessGame gameCopy = this.deepCopy();
+        ChessPiece piece = gameCopy.getBoard().getPiece(move.getStartPosition());
+        gameCopy.getBoard().addPiece(move.getEndPosition(), piece);
+        piece.promotePiece(move.getPromotionPiece());
+        gameCopy.getBoard().addPiece(move.getStartPosition(), null);
+        return(isInCheck(gameCopy.getTeamTurn()));
     }
 
     /**
@@ -132,7 +147,7 @@ public class ChessGame {
                 currentPosition= new ChessPosition(i,j);
                 if(board.getPiece(currentPosition) == null){continue;}
                 if (board.getPiece(currentPosition).getTeamColor() !=teamColor){
-                    allPossibleMovesList.addAll(board.getPiece(currentPosition).pieceMoves(board, currentPosition));
+                    allPossibleMovesList.addAll(validMoves(currentPosition));
                 }
             }
         }
@@ -174,5 +189,12 @@ public class ChessGame {
                 "teamTurn=" + teamTurn +
                 ", board=" + board.toString() +
                 '}';
+    }
+
+    public ChessGame deepCopy(){
+        ChessGame newGame = new ChessGame();
+        newGame.setBoard(this.getBoard().deepCopy());
+        newGame.setTeamTurn(teamTurn);
+        return newGame;
     }
 }

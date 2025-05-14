@@ -105,4 +105,9 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(color, type);
     }
+
+    public ChessPiece deepCopy(){
+        return new ChessPiece(color, type);
+    }
+
 }
