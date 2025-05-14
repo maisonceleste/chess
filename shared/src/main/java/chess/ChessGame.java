@@ -52,7 +52,10 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         // I will add code to check for check or check mate later, I just need to get the other code working :)
-        return board.getPiece(startPosition).pieceMoves(board, startPosition);
+        ArrayList<ChessMove> moves = new ArrayList<>();
+        ChessPiece thisPiece =  board.getPiece(startPosition);
+        if(thisPiece==null || thisPiece.getTeamColor()!=teamTurn){return moves;};
+        return thisPiece.pieceMoves(board, startPosition);
     }
 
     /**
@@ -67,7 +70,7 @@ public class ChessGame {
         }
         ChessPiece piece = board.getPiece(move.getStartPosition());
         board.addPiece(move.getEndPosition(), piece);
-        //have to
+        piece.promotePiece(move.getPromotionPiece());
         board.addPiece(move.getStartPosition(), null);
         if(teamTurn==TeamColor.BLACK){teamTurn=TeamColor.WHITE;}
         else{teamTurn=TeamColor.BLACK;}

@@ -49,7 +49,7 @@ public class ChessPiece {
     }
 
     public void promotePiece(ChessPiece.PieceType promotionPiece) {
-        if(type != PieceType.PAWN){return;}
+        if(type != PieceType.PAWN || promotionPiece==null){return;}
         this.type = promotionPiece;
 
     }
