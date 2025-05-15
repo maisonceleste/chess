@@ -54,7 +54,7 @@ public class ChessGame {
         // I will add code to check for check or check mate later, I just need to get the other code working :)
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece thisPiece =  board.getPiece(startPosition);
-        if(thisPiece==null || thisPiece.getTeamColor()!=teamTurn){return moves;}
+        if(thisPiece==null){return moves;}
         moves.addAll(thisPiece.pieceMoves(board, startPosition));
         for(int i=0; i<moves.size(); i++){
             if(doesMoveCauseCheck(moves.get(i))){
@@ -83,7 +83,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if(!validMoves(move.getStartPosition()).contains(move)){
+        if(!validMoves(move.getStartPosition()).contains(move) || board.getPiece(move.getStartPosition()).getTeamColor()!=teamTurn){
             throw new InvalidMoveException("This piece cannot make this move at this time");
         }
         ChessPiece piece = board.getPiece(move.getStartPosition());
@@ -132,7 +132,18 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return false;
+        ChessPosition currentPosition;
+        ArrayList<ChessMove> allPossibleMovesList = new ArrayList<>();
+        for(int i=1; i<=8; i++){
+            for (int j=1; j<=8; j++){
+                currentPosition= new ChessPosition(i,j);
+                if(board.getPiece(currentPosition) == null){continue;}
+                if (board.getPiece(currentPosition).getTeamColor() ==teamColor){
+                    allPossibleMovesList.addAll(validMoves(currentPosition));
+                }
+            }
+        }
+        return isInCheck(teamColor) && allPossibleMovesList.isEmpty();
     }
 
     /**
@@ -149,7 +160,7 @@ public class ChessGame {
             for (int j=1; j<=8; j++){
                 currentPosition= new ChessPosition(i,j);
                 if(board.getPiece(currentPosition) == null){continue;}
-                if (board.getPiece(currentPosition).getTeamColor() !=teamColor){
+                if (board.getPiece(currentPosition).getTeamColor() ==teamColor){
                     allPossibleMovesList.addAll(validMoves(currentPosition));
                 }
             }
