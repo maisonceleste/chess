@@ -55,22 +55,25 @@ public class ChessGame {
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece thisPiece =  board.getPiece(startPosition);
         if(thisPiece==null || thisPiece.getTeamColor()!=teamTurn){return moves;}
+        moves.addAll(thisPiece.pieceMoves(board, startPosition));
         for(int i=0; i<moves.size(); i++){
             if(doesMoveCauseCheck(moves.get(i))){
                 moves.remove(i);
                 i--;
             }
         }
-        return thisPiece.pieceMoves(board, startPosition);
+        return moves;
     }
 
     private boolean doesMoveCauseCheck(ChessMove move){
         ChessGame gameCopy = this.deepCopy();
         ChessPiece piece = gameCopy.getBoard().getPiece(move.getStartPosition());
-        gameCopy.getBoard().addPiece(move.getEndPosition(), piece);
-        piece.promotePiece(move.getPromotionPiece());
         gameCopy.getBoard().addPiece(move.getStartPosition(), null);
-        return(isInCheck(gameCopy.getTeamTurn()));
+        if(move.getPromotionPiece()!=null){
+            piece = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+        }
+        gameCopy.getBoard().addPiece(move.getEndPosition(), piece);
+        return(gameCopy.isInCheck(piece.getTeamColor()));
     }
 
     /**

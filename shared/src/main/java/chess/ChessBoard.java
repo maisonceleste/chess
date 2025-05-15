@@ -71,6 +71,17 @@ public class ChessBoard {
         }
     }
 
+    public boolean isEmpty(){
+        for(int i=0; i<8; i++){
+            for (int j=0; j<8; j++){
+                if(this.grid[i][j]!=null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         String output = "ChessBoard{ \n";
@@ -111,7 +122,9 @@ public class ChessBoard {
         ChessBoard newBoard = new ChessBoard();
         for(int i=0; i<8; i++){
             for (int j=0; j<8; j++){
-                newBoard.grid[i][j] = this.grid[i][j].deepCopy();
+                if(this.grid[i][j]!=null) {
+                    newBoard.grid[i][j] = this.grid[i][j].deepCopy();
+                }
             }
         }
         return newBoard;
