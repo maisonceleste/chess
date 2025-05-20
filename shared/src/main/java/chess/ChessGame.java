@@ -51,7 +51,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        // I will add code to check for check or check mate later, I just need to get the other code working :)
         ArrayList<ChessMove> moves = new ArrayList<>();
         ChessPiece thisPiece =  board.getPiece(startPosition);
         if(thisPiece==null){return moves;}
