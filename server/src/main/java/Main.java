@@ -3,9 +3,11 @@ import org.eclipse.jetty.server.Server;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        Server server = new Server();
-        server.run(8080);
-        System.out.println("♕ 240 Chess Server: " + piece);
+        var port = 8080;
+        var service = new PetService(dataAccess);
+        var server = new PetServer(service).run(port);
+        port = server.port();
+        port = server.port();
+
     }
 }
