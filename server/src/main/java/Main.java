@@ -9,7 +9,6 @@ public class Main {
         DataAccess dataAccess = new MemoryDataAccess();
         var service = new ChessService(dataAccess);
         var server = new Server().run(port);
-        port = server.port();
         System.out.printf("Server started on port %d with %s%n", port, dataAccess.getClass());
         return;
 
