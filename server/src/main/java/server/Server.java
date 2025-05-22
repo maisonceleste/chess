@@ -1,10 +1,9 @@
 package server;
 
-import ResponseException.ResponseException;
+import responseexception.ResponseException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
-import model.AuthData;
 import service.*;
 import spark.*;
 

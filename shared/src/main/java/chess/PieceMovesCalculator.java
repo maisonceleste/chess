@@ -15,14 +15,14 @@ public interface PieceMovesCalculator {
         return board.getPiece(position)!= null && board.getPiece(position).getTeamColor().equals(color);
     }
 
-    public default ArrayList<ChessMove> scanPattern(ChessBoard board, ChessPosition position, ChessGame.TeamColor color, int rowPattern, int columnPattern){
+    public default ArrayList<ChessMove> scanPattern(ChessBoard board, ChessPosition pstn, ChessGame.TeamColor color, int rowPatt, int columnPatt){
         ArrayList<ChessMove> moves = new ArrayList<>();
-        ChessPosition newPosition = new ChessPosition(position.getRow() + rowPattern, position.getColumn() + columnPattern);
+        ChessPosition newPosition = new ChessPosition(pstn.getRow() + rowPatt, pstn.getColumn() + columnPatt);
         while(true){
             if(outOfBounds(newPosition) || canCapture(board, newPosition, color)){break;}
-            moves.add(new ChessMove(position, newPosition, null));
+            moves.add(new ChessMove(pstn, newPosition, null));
             if(board.getPiece(newPosition)!= null && !board.getPiece(newPosition).getTeamColor().equals(color)){break;}
-            newPosition = new ChessPosition(newPosition.getRow() + rowPattern, newPosition.getColumn() + columnPattern);
+            newPosition = new ChessPosition(newPosition.getRow() + rowPatt, newPosition.getColumn() + columnPatt);
         }
         return moves;
     }
