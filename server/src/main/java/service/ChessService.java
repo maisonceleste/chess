@@ -1,8 +1,8 @@
 package service;
 
+import ResponseException.ResponseException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
 import model.AuthData;
 
 public class ChessService {
@@ -13,20 +13,20 @@ public class ChessService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(String username, String password, String email) {
+    public AuthData register(String username, String password, String email) throws ResponseException {
         //use data access to search for username
         if(dataAccess.getUser(username) != null){
-            //throw new DataAccessException("This username is already taken :(");
-            return new AuthData("authToken", "username already there");
+            throw new ResponseException(403, "This username is already taken :(");
+            //return new AuthData("authToken", "username already there");
         }
         else{
             dataAccess.createUser(username, password, email);
-            dataAccess.createAuth(username);
+            return dataAccess.createAuth(username);
         }
 
         //create auth data
         //return auth data
-        return new AuthData("I haven't finished the function", "FAKEusername");
+        //return new AuthData("I haven't finished the function", "FAKEusername");
     }
 
 }

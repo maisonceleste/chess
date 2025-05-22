@@ -1,5 +1,6 @@
 package server;
 
+import ResponseException.ResponseException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
@@ -22,6 +23,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
+        Spark.exception(ResponseException.class, this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -29,13 +31,17 @@ public class Server {
         return Spark.port();
     }
 
+    private void exceptionHandler(ResponseException exception, Request req, Response res){
+        res.status(exception.StatusCode());
+        res.body(exception.toJson());
+    }
 
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
     }
 
-    private String register(Request req, Response res) {
+    private String register(Request req, Response res) throws ResponseException{
         //I think I need to turn it back into json to send to client but for now I'm going to leave it :)
         var data = new Gson().fromJson(req.body(), RegisterRequest.class);
         String username = data.username();
