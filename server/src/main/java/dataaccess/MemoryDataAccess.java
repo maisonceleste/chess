@@ -22,7 +22,7 @@ public class MemoryDataAccess implements DataAccess{
     }
 
     @Override
-    public AuthData getAuth(String authID) {
+    public AuthData getAuth(String authID){
         return authCodes.get(authID);
     }
 

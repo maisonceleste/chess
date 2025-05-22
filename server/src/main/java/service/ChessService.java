@@ -4,6 +4,7 @@ import ResponseException.ResponseException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.UserData;
 
 public class ChessService {
 
@@ -13,20 +14,25 @@ public class ChessService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(String username, String password, String email) throws ResponseException {
-        //use data access to search for username
+    public RegisterResult register(String username, String password, String email) throws ResponseException {
         if(dataAccess.getUser(username) != null){
-            throw new ResponseException(403, "This username is already taken :(");
-            //return new AuthData("authToken", "username already there");
+            throw new ResponseException(403, "Error: already taken");
         }
         else{
             dataAccess.createUser(username, password, email);
-            return dataAccess.createAuth(username);
+            AuthData data = dataAccess.createAuth(username);
+            return new RegisterResult(data.username(), data.authToken());
         }
 
-        //create auth data
-        //return auth data
-        //return new AuthData("I haven't finished the function", "FAKEusername");
+    }
+
+    public LoginResult login(String username, String password) throws ResponseException {
+        UserData userData = dataAccess.getUser(username);
+        if(!userData.password().equals(password)){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
+        AuthData auth = dataAccess.createAuth(username);
+        return new LoginResult(username, auth.authToken());
     }
 
 }
