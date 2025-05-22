@@ -6,6 +6,7 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import model.AuthData;
 import service.ChessService;
+import service.CreateResult;
 import service.LoginResult;
 import service.RegisterResult;
 import spark.*;
@@ -28,6 +29,7 @@ public class Server {
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clear);
+        Spark.post("/game", this::create);
         Spark.exception(ResponseException.class, this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
 
@@ -76,5 +78,15 @@ public class Server {
         service.clear();
         res.type("application/json");
         return "{}";
+    }
+
+    private String create(Request req, Response res) throws ResponseException{
+        var auth = req.headers("Authorization");
+        var data = new Gson().fromJson(req.body(), CreateRequest.class);
+        String name = data.gameName();
+        CreateResult result = service.create(auth, name);
+        res.type("application/json");
+        return new Gson().toJson(result);
+
     }
 }

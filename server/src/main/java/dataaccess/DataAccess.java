@@ -1,7 +1,11 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
+
+import java.util.Collection;
 
 public interface DataAccess {
 
@@ -17,5 +21,7 @@ public interface DataAccess {
 
     UserData getUser(String username);
 
+    GameData createGame(String gameName);
 
+    Collection<GameData> listGames();
 }

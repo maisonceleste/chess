@@ -4,6 +4,7 @@ import ResponseException.ResponseException;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 public class ChessService {
@@ -49,6 +50,18 @@ public class ChessService {
     public boolean clear() throws ResponseException {
         dataAccess.deleteAll();
         return true;
+    }
+
+    public CreateResult create(String authID, String gameName) throws ResponseException {
+        if(gameName==null){
+            throw new ResponseException(400, "Error: bad request");
+        }
+        if(dataAccess.getAuth(authID)==null){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
+        GameData game =dataAccess.createGame(gameName);
+        return new CreateResult(game.gameID());
+
     }
 
 
