@@ -28,6 +28,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/game", this::create);
         Spark.get("/game", this::list);
+        Spark.put("/game", this::join);
         Spark.exception(ResponseException.class, this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
 
@@ -92,5 +93,15 @@ public class Server {
         ListResult result = service.list(auth);
         res.type("application/json");
         return new Gson().toJson(result);
+    }
+
+    private String join(Request req, Response res) throws ResponseException{
+        var auth = req.headers("Authorization");
+        var data = new Gson().fromJson(req.body(), JoinRequest.class);
+        String playerColor = data.playerColor();
+        int gameID = data.gameID();
+        service.join(playerColor, gameID, auth);
+        res.type("application/json");
+        return "{}";
     }
 }

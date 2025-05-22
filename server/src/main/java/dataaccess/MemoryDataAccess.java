@@ -12,7 +12,7 @@ public class MemoryDataAccess implements DataAccess{
     private int nextGameID = 1;
     final private HashMap<String, UserData> users = new HashMap<>();
     final private HashMap<String, AuthData> authCodes = new HashMap<>();
-    final private HashMap<String, GameData> games = new HashMap<>();
+    final private HashMap<Integer, GameData> games = new HashMap<>();
 
     @Override
     public void deleteAll() {
@@ -54,12 +54,27 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public GameData createGame(String gameName) {
         GameData game = new GameData(nextGameID++,null, null, gameName, new ChessGame());
-        games.put(game.gameName(), game);
+        games.put(game.gameID(), game);
         return game;
     }
 
     @Override
     public ArrayList<GameData> listGames() {
-        return new ArrayList<GameData>(games.values());
+        return new ArrayList<>(games.values());
+    }
+
+    @Override
+    public GameData updateGame(String color, int gameID, String username){
+        GameData oldGame = games.get(gameID);
+        GameData newGame;
+        if(color == "WHITE"){
+            newGame = new GameData(oldGame.gameID(), null, username, oldGame.gameName(), oldGame.game());
+        }
+        else{
+            newGame = new GameData(oldGame.gameID(), username, null, oldGame.gameName(), oldGame.game());
+        }
+        games.remove(gameID);
+        games.put(gameID, newGame);
+        return newGame;
     }
 }

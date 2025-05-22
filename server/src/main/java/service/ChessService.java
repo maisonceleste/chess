@@ -71,5 +71,14 @@ public class ChessService {
         return new ListResult(dataAccess.listGames());
     }
 
+    public boolean join(String color, int gameID, String authID) throws ResponseException {
+        AuthData auth = dataAccess.getAuth(authID);
+        if(auth==null){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
+        String username = auth.username();
+        dataAccess.updateGame(color, gameID, username);
+        return true;
+    }
 
 }
