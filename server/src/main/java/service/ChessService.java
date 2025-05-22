@@ -64,5 +64,12 @@ public class ChessService {
 
     }
 
+    public ListResult list(String authID) throws ResponseException {
+        if(dataAccess.getAuth(authID)==null){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
+        return new ListResult(dataAccess.listGames());
+    }
+
 
 }

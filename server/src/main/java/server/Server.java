@@ -5,10 +5,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import model.AuthData;
-import service.ChessService;
-import service.CreateResult;
-import service.LoginResult;
-import service.RegisterResult;
+import service.*;
 import spark.*;
 
 public class Server {
@@ -30,6 +27,7 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clear);
         Spark.post("/game", this::create);
+        Spark.get("/game", this::list);
         Spark.exception(ResponseException.class, this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
 
@@ -87,6 +85,12 @@ public class Server {
         CreateResult result = service.create(auth, name);
         res.type("application/json");
         return new Gson().toJson(result);
+    }
 
+    private String list(Request req, Response res) throws ResponseException{
+        var auth = req.headers("Authorization");
+        ListResult result = service.list(auth);
+        res.type("application/json");
+        return new Gson().toJson(result);
     }
 }
