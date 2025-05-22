@@ -31,8 +31,11 @@ public class ChessService {
     }
 
     public LoginResult login(String username, String password) throws ResponseException {
+        if(username==null || password==null){
+            throw new ResponseException(400, "Error: bad request");
+        }
         UserData userData = dataAccess.getUser(username);
-        if(!userData.password().equals(password)){
+        if(userData==null || !userData.password().equals(password)){
             throw new ResponseException(401, "Error: Unauthorized");
         }
         AuthData auth = dataAccess.createAuth(username);
@@ -71,11 +74,18 @@ public class ChessService {
         return new ListResult(dataAccess.listGames());
     }
 
-    public boolean join(String color, int gameID, String authID) throws ResponseException {
+    public boolean join(String color, int gameID, String authID) throws ResponseException{
+        if(color==null||(!color.equals("BLACK") && !color.equals("WHITE"))|| gameID == 0 || authID == null){
+            throw new ResponseException(400, "Error: Bad Request");
+        }
         AuthData auth = dataAccess.getAuth(authID);
         if(auth==null){
             throw new ResponseException(401, "Error: Unauthorized");
         }
+        GameData game = dataAccess.getGame(gameID);
+        if(game==null){throw new ResponseException(400, "Error: Bad Request");}
+        if(color.equals("WHITE") && game.whiteUsername()!=null){throw new ResponseException(403, "Error: already taken");}
+        if(color.equals("BLACK") && game.blackUsername()!=null){throw new ResponseException(403, "Error: already taken");}
         String username = auth.username();
         dataAccess.updateGame(color, gameID, username);
         return true;

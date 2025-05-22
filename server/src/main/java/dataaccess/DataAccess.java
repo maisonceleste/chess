@@ -24,8 +24,11 @@ public interface DataAccess {
 
     GameData createGame(String gameName);
 
+    GameData getGame(int gameID);
+
     ArrayList<GameData> listGames();
 
     GameData updateGame(String color, int gameID, String username);
+
 
 }

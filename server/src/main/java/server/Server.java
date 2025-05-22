@@ -95,7 +95,7 @@ public class Server {
         return new Gson().toJson(result);
     }
 
-    private String join(Request req, Response res) throws ResponseException{
+    private String join(Request req, Response res) throws ResponseException, DataAccessException {
         var auth = req.headers("Authorization");
         var data = new Gson().fromJson(req.body(), JoinRequest.class);
         String playerColor = data.playerColor();

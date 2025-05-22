@@ -59,19 +59,24 @@ public class MemoryDataAccess implements DataAccess{
     }
 
     @Override
+    public GameData getGame(int gameID){
+        return games.get(gameID);
+    }
+
+    @Override
     public ArrayList<GameData> listGames() {
         return new ArrayList<>(games.values());
     }
 
     @Override
-    public GameData updateGame(String color, int gameID, String username){
+    public GameData updateGame(String color, int gameID, String username) {
         GameData oldGame = games.get(gameID);
         GameData newGame;
-        if(color == "WHITE"){
-            newGame = new GameData(oldGame.gameID(), null, username, oldGame.gameName(), oldGame.game());
+        if(Objects.equals(color, "WHITE")){
+            newGame = new GameData(oldGame.gameID(), username, oldGame.blackUsername(), oldGame.gameName(), oldGame.game());
         }
         else{
-            newGame = new GameData(oldGame.gameID(), username, null, oldGame.gameName(), oldGame.game());
+            newGame = new GameData(oldGame.gameID(), oldGame.whiteUsername(), username, oldGame.gameName(), oldGame.game());
         }
         games.remove(gameID);
         games.put(gameID, newGame);
