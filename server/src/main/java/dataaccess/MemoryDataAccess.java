@@ -14,6 +14,13 @@ public class MemoryDataAccess implements DataAccess{
     final private HashMap<String, GameData> games = new HashMap<>();
 
     @Override
+    public void deleteAll() {
+        users.clear();
+        authCodes.clear();
+        games.clear();
+    }
+
+    @Override
     public AuthData createAuth(String username){
         String authID = UUID.randomUUID().toString();
         AuthData newToken= new AuthData(authID, username);
@@ -26,6 +33,7 @@ public class MemoryDataAccess implements DataAccess{
         return authCodes.get(authID);
     }
 
+    @Override
     public void deleteAuth(String authID){
         authCodes.remove(authID);
     }

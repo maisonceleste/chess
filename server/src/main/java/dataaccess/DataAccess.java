@@ -4,6 +4,9 @@ import model.AuthData;
 import model.UserData;
 
 public interface DataAccess {
+
+    void deleteAll();
+
     AuthData createAuth(String username);
 
     AuthData getAuth(String authID);
@@ -13,4 +16,6 @@ public interface DataAccess {
     UserData createUser(String username, String password, String email);
 
     UserData getUser(String username);
+
+
 }

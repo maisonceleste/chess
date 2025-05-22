@@ -15,6 +15,9 @@ public class ChessService {
     }
 
     public RegisterResult register(String username, String password, String email) throws ResponseException {
+        if(username==null || password==null || email==null){
+            throw new ResponseException(400, "Error: bad request");
+        }
         if(dataAccess.getUser(username) != null){
             throw new ResponseException(403, "Error: already taken");
         }
@@ -42,5 +45,11 @@ public class ChessService {
         dataAccess.deleteAuth(authID);
         return true;
     }
+
+    public boolean clear() throws ResponseException {
+        dataAccess.deleteAll();
+        return true;
+    }
+
 
 }
