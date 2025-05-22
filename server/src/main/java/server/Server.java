@@ -26,9 +26,9 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
         Spark.exception(ResponseException.class, this::exceptionHandler);
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
+        //This line initializes the server and can be removed once you have a functioning endpoint
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -56,11 +56,19 @@ public class Server {
     }
 
     private String login(Request req, Response res) throws ResponseException {
-        var data = new Gson().fromJson(req.body(), RegisterRequest.class);
+        var data = new Gson().fromJson(req.body(), LoginRequest.class);
         String username = data.username();
         String password = data.password();
         LoginResult result = service.login(username, password);
         res.type("application/json");
         return new Gson().toJson(result);
+    }
+
+    private String logout(Request req, Response res) throws ResponseException {
+        var data = req.headers("Authorization");
+        //String token = data.authToken();
+        service.logout(data);
+        res.type("application/json");
+        return "{}";
     }
 }

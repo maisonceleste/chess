@@ -35,4 +35,12 @@ public class ChessService {
         return new LoginResult(username, auth.authToken());
     }
 
+    public boolean logout(String authID) throws ResponseException {
+        if(dataAccess.getAuth(authID)==null){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
+        dataAccess.deleteAuth(authID);
+        return true;
+    }
+
 }

@@ -26,6 +26,10 @@ public class MemoryDataAccess implements DataAccess{
         return authCodes.get(authID);
     }
 
+    public void deleteAuth(String authID){
+        authCodes.remove(authID);
+    }
+
     @Override
     public UserData createUser(String username, String password, String email){
         UserData newUser = new UserData(username, password, email);
