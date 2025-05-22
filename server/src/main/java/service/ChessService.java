@@ -13,10 +13,11 @@ public class ChessService {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(String username, String password, String email){
+    public AuthData register(String username, String password, String email) {
         //use data access to search for username
         if(dataAccess.getUser(username) != null){
-            throw new DataAccessException("This username is already taken :(");
+            //throw new DataAccessException("This username is already taken :(");
+            return new AuthData("authToken", "username already there");
         }
         else{
             dataAccess.createUser(username, password, email);
