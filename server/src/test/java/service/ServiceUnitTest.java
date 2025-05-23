@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 
 public class ServiceUnitTest {
-    static final ChessService service = new ChessService(new MemoryDataAccess());
+    static final ChessService Service = new ChessService(new MemoryDataAccess());
 
     @BeforeEach
     void clear() {

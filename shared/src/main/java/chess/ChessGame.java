@@ -131,18 +131,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        ChessPosition currentPosition;
-        ArrayList<ChessMove> allPossibleMovesList = new ArrayList<>();
-        for(int i=1; i<=8; i++){
-            for (int j=1; j<=8; j++){
-                currentPosition= new ChessPosition(i,j);
-                if(board.getPiece(currentPosition) == null){continue;}
-                if (board.getPiece(currentPosition).getTeamColor() ==teamColor){
-                    allPossibleMovesList.addAll(validMoves(currentPosition));
-                }
-            }
-        }
-        return isInCheck(teamColor) && allPossibleMovesList.isEmpty();
+        return isInCheck(teamColor) && noValidMoves(teamColor);
     }
 
     /**
@@ -153,18 +142,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        ChessPosition currentPosition;
-        ArrayList<ChessMove> allPossibleMovesList = new ArrayList<>();
-        for(int i=1; i<=8; i++){
-            for (int j=1; j<=8; j++){
-                currentPosition= new ChessPosition(i,j);
-                if(board.getPiece(currentPosition) == null){continue;}
-                if (board.getPiece(currentPosition).getTeamColor() ==teamColor){
-                    allPossibleMovesList.addAll(validMoves(currentPosition));
-                }
-            }
-        }
-        return !isInCheck(teamColor) && allPossibleMovesList.isEmpty();
+        return !isInCheck(teamColor) && noValidMoves(teamColor);
     }
 
     /**
@@ -181,6 +159,21 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    private Boolean noValidMoves(TeamColor teamColor){
+        ChessPosition currentPosition;
+        ArrayList<ChessMove> allPossibleMovesList = new ArrayList<>();
+        for(int i=1; i<=8; i++){
+            for (int j=1; j<=8; j++){
+                currentPosition= new ChessPosition(i,j);
+                if(board.getPiece(currentPosition) == null){continue;}
+                if (board.getPiece(currentPosition).getTeamColor() ==teamColor){
+                    allPossibleMovesList.addAll(validMoves(currentPosition));
+                }
+            }
+        }
+        return allPossibleMovesList.isEmpty();
     }
 
     @Override
