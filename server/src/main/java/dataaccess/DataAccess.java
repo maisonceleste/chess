@@ -12,6 +12,8 @@ public interface DataAccess {
 
     void deleteAll();
 
+    void resetGameID();
+
     AuthData createAuth(String username);
 
     AuthData getAuth(String authID);

@@ -2,7 +2,6 @@ package server;
 
 import responseexception.ResponseException;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import service.*;
 import spark.*;
@@ -36,7 +35,7 @@ public class Server {
     }
 
     private void exceptionHandler(ResponseException exception, Request req, Response res){
-        res.status(exception.StatusCode());
+        res.status(exception.statusCode());
         res.body(exception.toJson());
     }
 
@@ -94,7 +93,7 @@ public class Server {
         return new Gson().toJson(result);
     }
 
-    private String join(Request req, Response res) throws ResponseException, DataAccessException {
+    private String join(Request req, Response res) throws ResponseException{
         var auth = req.headers("Authorization");
         var data = new Gson().fromJson(req.body(), JoinRequest.class);
         String playerColor = data.playerColor();

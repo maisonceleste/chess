@@ -10,9 +10,12 @@ import java.util.*;
 public class MemoryDataAccess implements DataAccess{
 
     private int nextGameID = 1;
-    final private HashMap<String, UserData> users = new HashMap<>();
-    final private HashMap<String, AuthData> authCodes = new HashMap<>();
-    final private HashMap<Integer, GameData> games = new HashMap<>();
+    final public HashMap<String, UserData> users = new HashMap<>();
+    final public HashMap<String, AuthData> authCodes = new HashMap<>();
+    final public HashMap<Integer, GameData> games = new HashMap<>();
+
+    @Override
+    public void resetGameID(){nextGameID=1;}
 
     @Override
     public void deleteAll() {
