@@ -20,13 +20,13 @@ public class ServiceUnitTest {
 
     @BeforeEach
     void clear() {
-        service.dataAccess.deleteAll();
-        service.dataAccess.resetGameID();
+        Service.dataAccess.deleteAll();
+        Service.dataAccess.resetGameID();
     }
 
     @Test
     void registerUser() throws ResponseException {
-        RegisterResult result = service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult result = Service.register("correctUsername", "correctPassword", "correctEmail");
 
         RegisterResult expectedResult = new RegisterResult("correctUsername", "random auth code");
 
@@ -36,15 +36,15 @@ public class ServiceUnitTest {
 
     @Test
     void registerBadUser() throws ResponseException {
-        service.register("correctUsername", "correctPassword", "correctEmail");
-        assertThrows(ResponseException.class, () -> service.register("correctUsername", "evil", "Evil"));
-        assertThrows(ResponseException.class, () -> service.register(null, "evil", "superEvil"));
+        Service.register("correctUsername", "correctPassword", "correctEmail");
+        assertThrows(ResponseException.class, () -> Service.register("correctUsername", "evil", "Evil"));
+        assertThrows(ResponseException.class, () -> Service.register(null, "evil", "superEvil"));
     }
 
     @Test
     void loginUser() throws ResponseException{
-        service.register("correctUsername", "correctPassword", "correctEmail");
-        LoginResult result = service.login("correctUsername", "correctPassword");
+        Service.register("correctUsername", "correctPassword", "correctEmail");
+        LoginResult result = Service.login("correctUsername", "correctPassword");
 
         LoginResult expectedResult = new LoginResult("correctUsername", "random auth token");
 
@@ -54,86 +54,86 @@ public class ServiceUnitTest {
 
     @Test
     void loginBadUser() throws ResponseException{
-        service.register("correctUsername", "correctPassword", "correctEmail");
-        assertThrows(ResponseException.class, () -> service.login("correctUsername", "evil"));
-        assertThrows(ResponseException.class, () -> service.login(null, "correctPassword"));
+        Service.register("correctUsername", "correctPassword", "correctEmail");
+        assertThrows(ResponseException.class, () -> Service.login("correctUsername", "evil"));
+        assertThrows(ResponseException.class, () -> Service.login(null, "correctPassword"));
     }
 
     @Test
     void logoutUser() throws ResponseException{
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        service.logout(authToken);
-        assertNull(service.dataAccess.getAuth(authToken));
+        Service.logout(authToken);
+        assertNull(Service.dataAccess.getAuth(authToken));
     }
 
     @Test
     void logoutBadUser() throws ResponseException{
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
-        assertThrows(ResponseException.class, () -> service.logout("FALSE authToken"));
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
+        assertThrows(ResponseException.class, () -> Service.logout("FALSE authToken"));
     }
 
     @Test
     void createGame() throws ResponseException{
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        CreateResult result = service.create(authToken, "testGame");
+        CreateResult result = Service.create(authToken, "testGame");
         assertEquals(1, result.gameID());
     }
 
     @Test
     void createBadGame() throws ResponseException{
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        assertThrows(ResponseException.class, () -> service.create("FALSE authToken", "testGame"));
-        assertThrows(ResponseException.class, () -> service.create(authToken , null));
+        assertThrows(ResponseException.class, () -> Service.create("FALSE authToken", "testGame"));
+        assertThrows(ResponseException.class, () -> Service.create(authToken , null));
     }
 
     @Test
     void listGames() throws ResponseException {
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        service.create(authToken, "testGame1");
-        service.create(authToken, "testGame2");
-        ListResult result =service.list(authToken);
+        Service.create(authToken, "testGame1");
+        Service.create(authToken, "testGame2");
+        ListResult result =Service.list(authToken);
         assertEquals(2, result.games().size());
     }
 
     @Test
     void badListGames() throws ResponseException {
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        service.create(authToken, "testGame1");
-        service.create(authToken, "testGame2");
-        assertThrows(ResponseException.class, () -> service.list("bad auth token"));
+        Service.create(authToken, "testGame1");
+        Service.create(authToken, "testGame2");
+        assertThrows(ResponseException.class, () -> Service.list("bad auth token"));
     }
 
     @Test
     void joinGame() throws ResponseException {
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        service.create(authToken, "testGame1");
-        assert(service.join("WHITE", 1, authToken));
+        Service.create(authToken, "testGame1");
+        assert(Service.join("WHITE", 1, authToken));
     }
 
     @Test
     void badJoinGame() throws ResponseException {
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        service.create(authToken, "testGame1");
-        service.join("WHITE", 1, authToken);
-        assertThrows(ResponseException.class, () -> service.join("WHITE", 1, authToken));
+        Service.create(authToken, "testGame1");
+        Service.join("WHITE", 1, authToken);
+        assertThrows(ResponseException.class, () -> Service.join("WHITE", 1, authToken));
     }
 
     @Test
     void testClear() throws ResponseException {
-        RegisterResult registration =service.register("correctUsername", "correctPassword", "correctEmail");
+        RegisterResult registration =Service.register("correctUsername", "correctPassword", "correctEmail");
         String authToken = registration.authToken();
-        service.create(authToken, "testGame1");
-        service.clear();
-        assertNull(service.dataAccess.getUser("correctUsername"));
-        assertNull(service.dataAccess.getAuth(authToken));
-        assertNull(service.dataAccess.getGame(1));
+        Service.create(authToken, "testGame1");
+        Service.clear();
+        assertNull(Service.dataAccess.getUser("correctUsername"));
+        assertNull(Service.dataAccess.getAuth(authToken));
+        assertNull(Service.dataAccess.getGame(1));
     }
 
 }
