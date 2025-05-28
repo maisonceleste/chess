@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.MySqlDataAccess;
 import responseexception.ResponseException;
 import com.google.gson.Gson;
 import dataaccess.MemoryDataAccess;
@@ -10,8 +11,13 @@ public class Server {
 
     ChessService service;
 
-    public Server() {
-        this.service = new ChessService(new MemoryDataAccess());
+    public Server(){
+        try {
+            this.service = new ChessService(new MySqlDataAccess());
+        } catch (ResponseException e) {
+            System.out.println("Could not open MySQL server :( use memory instead");
+            this.service = new ChessService(new MemoryDataAccess());;
+        }
     }
 
     public int run(int desiredPort) {
