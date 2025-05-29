@@ -25,11 +25,11 @@ public interface DataAccess {
 
     UserData getUser(String username) throws ResponseException;
 
-    GameData createGame(String gameName);
+    GameData createGame(String gameName) throws ResponseException;
 
-    GameData getGame(int gameID);
+    GameData getGame(int gameID) throws ResponseException;
 
-    ArrayList<GameData> listGames();
+    ArrayList<GameData> listGames() throws ResponseException;
 
     GameData updateGame(String color, int gameID, String username);
 
