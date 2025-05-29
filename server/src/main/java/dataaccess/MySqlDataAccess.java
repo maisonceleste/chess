@@ -57,7 +57,7 @@ public class MySqlDataAccess implements DataAccess{
                 }
             }
         } catch (Exception e) {
-            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+            throw new ResponseException(500, String.format("DATABASE ERROR: Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
@@ -91,7 +91,7 @@ public class MySqlDataAccess implements DataAccess{
                 }
             }
         } catch (Exception e) {
-            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+            throw new ResponseException(500, String.format("DATABASE ERROR: Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
@@ -118,7 +118,7 @@ public class MySqlDataAccess implements DataAccess{
                 }
             }
         } catch (Exception e) {
-            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+            throw new ResponseException(500, String.format("DATABASE ERROR: Unable to read data: %s", e.getMessage()));
         }
         return null;
     }
@@ -146,14 +146,17 @@ public class MySqlDataAccess implements DataAccess{
                 }
             }
         } catch (Exception e) {
-            throw new ResponseException(500, String.format("Unable to read data: %s", e.getMessage()));
+            throw new ResponseException(500, String.format("DATABASE ERROR: Unable to read data: %s", e.getMessage()));
         }
         return result;
     }
 
     @Override
-    public GameData updateGame(String color, int gameID, String username) {
-        return null;
+    public GameData updateGame(String color, int gameID, String username) throws ResponseException {
+        String column = color.equalsIgnoreCase("WHITE") ? "whiteUsername" : "blackUsername";
+        var statement = "UPDATE games SET " + column + " = ? WHERE gameID = ?";
+        int id = executeGameUpdate(statement, username, gameID);
+        return getGame(gameID);
     }
 
     private void executeUpdate(String statement, Object... params) throws ResponseException {
@@ -179,7 +182,7 @@ public class MySqlDataAccess implements DataAccess{
 
             }
         } catch (SQLException | DataAccessException e) {
-            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+            throw new ResponseException(500, String.format("DATABASE ERROR: unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
 
@@ -255,7 +258,7 @@ public class MySqlDataAccess implements DataAccess{
                 }
             }
         } catch (SQLException | DataAccessException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new ResponseException(500, String.format("DATABASE ERROR: Unable to configure database: %s", ex.getMessage()));
         }
     }
 }

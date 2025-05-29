@@ -31,7 +31,7 @@ public interface DataAccess {
 
     ArrayList<GameData> listGames() throws ResponseException;
 
-    GameData updateGame(String color, int gameID, String username);
+    GameData updateGame(String color, int gameID, String username) throws ResponseException;
 
 
 }
