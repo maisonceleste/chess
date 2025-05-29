@@ -1,5 +1,8 @@
 package dataaccess;
 
+import model.AuthData;
+import model.UserData;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import responseexception.ResponseException;
@@ -12,131 +15,106 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MySqlDataAccessUnitTest {
-    static final ChessService SERVICE;
+    static final DataAccess TEST_DAO;
+    static final DataAccess EXPTECTED_DAO;
 
     static {
-        try {
-            SERVICE = new ChessService(new MySqlDataAccess());
-        } catch (ResponseException e) {
-            throw new RuntimeException(e);
-        }
+      try{
+          TEST_DAO= new MySqlDataAccess();
+          EXPTECTED_DAO = new MemoryDataAccess();
+      } catch (ResponseException e) {
+          throw new RuntimeException(e);
+      }
     }
 
     @BeforeEach
     void clear() throws ResponseException {
-        SERVICE.dataAccess.deleteAll();
-        SERVICE.dataAccess.resetGameID();
+        TEST_DAO.deleteAll();
+        EXPTECTED_DAO.deleteAll();
     }
 
     @Test
-    void registerUser() throws ResponseException {
-        RegisterResult result = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
+    void positiveCreateUser() throws ResponseException {
+        UserData result = TEST_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
 
-        RegisterResult expectedResult = new RegisterResult("correctUsername", "random auth code");
+        UserData expectedResult = EXPTECTED_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
 
         assertEquals(expectedResult.username(), result.username());
-        assertNotNull(result.authToken());
     }
 
     @Test
-    void registerBadUser() throws ResponseException {
-        SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        assertThrows(ResponseException.class, () -> SERVICE.register("correctUsername", "evil", "Evil"));
-        assertThrows(ResponseException.class, () -> SERVICE.register(null, "evil", "superEvil"));
+    void negativeCreateUser() throws ResponseException {
+        TEST_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
+        assertThrows(ResponseException.class, () -> TEST_DAO.createUser("evilUsername", null, "thisEmail"));
+        assertThrows(ResponseException.class, () -> TEST_DAO.createUser("thisUsername", "evilPassword", "thisEmail"));
+
     }
 
     @Test
-    void loginUser() throws ResponseException{
-        SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        LoginResult result = SERVICE.login("correctUsername", "correctPassword");
+    void positiveGetUser() throws ResponseException {
+        TEST_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
+        EXPTECTED_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
 
-        LoginResult expectedResult = new LoginResult("correctUsername", "random auth token");
+        UserData result = TEST_DAO.getUser("thisUsername");
+        UserData expectedResult = EXPTECTED_DAO.getUser("thisUsername");
 
         assertEquals(expectedResult.username(), result.username());
-        assertNotNull(result.authToken());
     }
 
     @Test
-    void loginBadUser() throws ResponseException{
-        SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        assertThrows(ResponseException.class, () -> SERVICE.login("correctUsername", "evil"));
-        assertThrows(ResponseException.class, () -> SERVICE.login(null, "correctPassword"));
+    void negativeGetUser() throws ResponseException {
+        TEST_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
+        assertNull(TEST_DAO.getUser("fakeUser"));
+
     }
 
     @Test
-    void logoutUser() throws ResponseException{
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        SERVICE.logout(authToken);
-        assertNull(SERVICE.dataAccess.getAuth(authToken));
+    void positiveCreateAuth() throws ResponseException {
+        AuthData result = TEST_DAO.createAuth("thisUsername");
+        AuthData expectedResult = EXPTECTED_DAO.createAuth("thisUsername");
+        assertEquals(expectedResult.username(), result.username());
     }
 
     @Test
-    void logoutBadUser() throws ResponseException{
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        assertThrows(ResponseException.class, () -> SERVICE.logout("FALSE authToken"));
+    void negativeCreateAuth() throws ResponseException {
+        assertThrows(ResponseException.class, () -> TEST_DAO.createAuth(null));
     }
 
     @Test
-    void createGame() throws ResponseException{
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        CreateResult result = SERVICE.create(authToken, "testGame");
-        assertEquals(1, result.gameID());
+    void positiveGetAuth() throws ResponseException {
+        String testAuthID = TEST_DAO.createAuth("thisUsername").authToken();
+        String expectedAuthID = EXPTECTED_DAO.createAuth("thisUsername").authToken();
+
+        AuthData result = TEST_DAO.getAuth(testAuthID);
+        AuthData expectedResult = EXPTECTED_DAO.getAuth(expectedAuthID);
+
+        assertEquals(expectedResult.username(), result.username());
     }
 
     @Test
-    void createBadGame() throws ResponseException{
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        assertThrows(ResponseException.class, () -> SERVICE.create("FALSE authToken", "testGame"));
-        assertThrows(ResponseException.class, () -> SERVICE.create(authToken , null));
+    void negativeGetAuth() throws ResponseException {
+        TEST_DAO.createAuth("thisUsername");
+        assertNull(TEST_DAO.getAuth("fakeAuthID"));
+
     }
 
     @Test
-    void listGames() throws ResponseException {
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        SERVICE.create(authToken, "testGame1");
-        SERVICE.create(authToken, "testGame2");
-        ListResult result = SERVICE.list(authToken);
-        assertEquals(2, result.games().size());
+    void positiveDeleteAuth() throws ResponseException {
+        String testAuthID = TEST_DAO.createAuth("thisUsername").authToken();
+
+        TEST_DAO.deleteAuth(testAuthID);
+
+        assertNull(TEST_DAO.getAuth(testAuthID));
     }
 
     @Test
-    void badListGames() throws ResponseException {
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        SERVICE.create(authToken, "testGame1");
-        SERVICE.create(authToken, "testGame2");
-        assertThrows(ResponseException.class, () -> SERVICE.list("bad auth token"));
+    void negativeDeleteAuth() throws ResponseException {
+        String testAuthID = TEST_DAO.createAuth("thisUsername").authToken();
+
+        TEST_DAO.deleteAuth("differentAuthID");
+
+        assertNotNull(TEST_DAO.getAuth(testAuthID));
     }
 
-    @Test
-    void joinGame() throws ResponseException {
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        SERVICE.create(authToken, "testGame1");
-        assert(SERVICE.join("WHITE", 1, authToken));
-    }
 
-    @Test
-    void badJoinGame() throws ResponseException {
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        SERVICE.create(authToken, "testGame1");
-        SERVICE.join("WHITE", 1, authToken);
-        assertThrows(ResponseException.class, () -> SERVICE.join("WHITE", 1, authToken));
-    }
-
-    @Test
-    void testClear() throws ResponseException {
-        RegisterResult registration = SERVICE.register("correctUsername", "correctPassword", "correctEmail");
-        String authToken = registration.authToken();
-        SERVICE.create(authToken, "testGame1");
-        SERVICE.clear();
-        assertNull(SERVICE.dataAccess.getUser("correctUsername"));
-        assertNull(SERVICE.dataAccess.getAuth(authToken));
-        assertNull(SERVICE.dataAccess.getGame(1));
-    }
 }
