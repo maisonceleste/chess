@@ -1,5 +1,6 @@
 package service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import responseexception.ResponseException;
 import dataaccess.DataAccess;
 import model.AuthData;
@@ -22,6 +23,7 @@ public class ChessService {
             throw new ResponseException(403, "Error: already taken");
         }
         else{
+            password = encryptPassword(password);
             dataAccess.createUser(username, password, email);
             AuthData data = dataAccess.createAuth(username);
             return new RegisterResult(data.username(), data.authToken());
@@ -34,7 +36,7 @@ public class ChessService {
             throw new ResponseException(400, "Error: bad request");
         }
         UserData userData = dataAccess.getUser(username);
-        if(userData==null || !userData.password().equals(password)){
+        if(userData==null || !verifyPassword(userData.password(), password)){
             throw new ResponseException(401, "Error: Unauthorized");
         }
         AuthData auth = dataAccess.createAuth(username);
@@ -88,6 +90,14 @@ public class ChessService {
         String username = auth.username();
         dataAccess.updateGame(color, gameID, username);
         return true;
+    }
+
+    private String encryptPassword(String clearTextPassword){
+        return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
+    }
+
+    private boolean verifyPassword(String hashedPassword, String providedPassword){
+        return BCrypt.checkpw(providedPassword, hashedPassword);
     }
 
 }

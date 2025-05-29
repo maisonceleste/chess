@@ -12,7 +12,7 @@ public class ServiceUnitTest {
     static final ChessService SERVICE = new ChessService(new MemoryDataAccess());
 
     @BeforeEach
-    void clear() {
+    void clear() throws ResponseException {
         SERVICE.dataAccess.deleteAll();
         SERVICE.dataAccess.resetGameID();
     }
