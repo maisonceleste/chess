@@ -1,12 +1,15 @@
 package dataaccess;
 
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import responseexception.ResponseException;
 import service.*;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,5 +119,71 @@ public class MySqlDataAccessUnitTest {
         assertNotNull(TEST_DAO.getAuth(testAuthID));
     }
 
+    @Test
+    void positiveCreateGame() throws ResponseException {
+        GameData result = TEST_DAO.createGame("testGame");
+        GameData expectedResult = EXPTECTED_DAO.createGame("testGame");
+        assertEquals(expectedResult.gameName(), result.gameName());
+    }
 
+    @Test
+    void negativeCreateGame() throws ResponseException {
+        assertThrows(ResponseException.class, () -> TEST_DAO.createGame(null));
+    }
+
+    @Test
+    void positiveGetGame() throws ResponseException {
+        GameData expectedResult = TEST_DAO.createGame("testGame");
+        GameData result = TEST_DAO.getGame(expectedResult.gameID());
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    void negativeGetGame() throws ResponseException {
+        TEST_DAO.createGame("testGame");
+        assertNull(TEST_DAO.getGame(0));
+    }
+
+    @Test
+    void positiveListGames() throws ResponseException {
+        TEST_DAO.createGame("testGame1");
+        TEST_DAO.createGame("testGame2");
+        EXPTECTED_DAO.createGame("testGame1");
+        EXPTECTED_DAO.createGame("testGame2");
+
+        ArrayList<GameData> result = TEST_DAO.listGames();
+        ArrayList<GameData> expectedResult = EXPTECTED_DAO.listGames();
+        assertEquals(expectedResult, result);
+    }
+
+    @Test
+    void negativeListGames() throws ResponseException {
+        assertEquals(0, TEST_DAO.listGames().size());
+    }
+
+    @Test
+    void positiveUpdateGame() throws ResponseException {
+        GameData originalGame = TEST_DAO.createGame("testGame");
+        GameData result = TEST_DAO.updateGame("BLACK", originalGame.gameID(), "player");
+        assertEquals("player", result.blackUsername());
+    }
+
+    @Test
+    void negativeUpdateGame() throws ResponseException {
+        GameData originalGame = TEST_DAO.createGame("testGame");
+        GameData result = TEST_DAO.updateGame("BLACK", 0 , "player");
+        assertNull(result);
+    }
+
+    @Test
+    void deleteAllTest() throws ResponseException {
+        AuthData authID = TEST_DAO.createAuth("thisUsername");
+        UserData user = TEST_DAO.createUser("thisUsername", "thisPassword", "thisEmail");
+        GameData game = TEST_DAO.createGame("testGame");
+        TEST_DAO.deleteAll();
+        assertNull(TEST_DAO.getAuth(authID.authToken()));
+        assertNull(TEST_DAO.getUser(user.username()));
+        assertNull(TEST_DAO.getGame(game.gameID()));
+
+    }
 }
