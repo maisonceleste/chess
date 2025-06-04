@@ -3,6 +3,7 @@ import Requests.JoinRequest;
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
 import Results.CreateResult;
+import Results.ListResult;
 import Results.LoginResult;
 import Results.RegisterResult;
 import com.google.gson.Gson;
@@ -15,6 +16,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -26,32 +28,38 @@ public class ServerFacade {
 
     public RegisterResult registerUser(RegisterRequest request) throws ResponseException{
         var path = "/user";
-        return this.makeRequest("POST", path, request, RegisterResult.class);
+        return this.makeRequest("POST", path, request, null, RegisterResult.class);
     }
 
     public LoginResult loginUser(LoginRequest request) throws ResponseException{
         var path = "/session";
-        return this.makeRequest("POST", path, request, LoginResult.class);
+        return this.makeRequest("POST", path, request, null, LoginResult.class);
     }
 
     public void logoutUser(String authID) throws ResponseException{
         var path = "/session";
-        this.makeRequest("DELETE", path, authID, null);
+        this.makeRequest("DELETE", path, null, authID, null);
     }
 
     public CreateResult createGame(String gameName, String authID) throws ResponseException{
         var path = "/game";
         CreateRequest request= new CreateRequest(gameName, authID);
-        return this.makeRequest("POST", path, request, CreateResult.class);
+        return this.makeRequest("POST", path, request, authID, CreateResult.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public ListResult listGames(String authID) throws ResponseException{
+        var path = "/game";
+        return this.makeRequest("GET", path, null, authID, ListResult.class);
+    }
+
+    private <T> T makeRequest(String method, String path, Object request, String authID, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            addAuthorizationHeader(request, http);
-
+            if (authID != null) {
+                http.setRequestProperty("Authorization", authID);
+            }
             if (request != null && (method.equals("POST") || method.equals("PUT"))) {
                 http.setDoOutput(true);
                 writeBody(request, http);
@@ -76,15 +84,6 @@ public class ServerFacade {
 
     }
 
-    private static void addAuthorizationHeader(Object request, HttpURLConnection http){
-        if (request instanceof String authToken) {
-            http.setRequestProperty("Authorization", authToken);
-        } else if (request instanceof JoinRequest joinRequest) {
-            http.setRequestProperty("Authorization", joinRequest.authID());
-        } else if (request instanceof CreateRequest createRequest) {
-            http.setRequestProperty("Authorization", createRequest.authID());
-        }
-    }
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();

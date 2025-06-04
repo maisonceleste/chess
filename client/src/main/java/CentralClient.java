@@ -1,5 +1,7 @@
+import model.GameData;
 import responseexception.ResponseException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class CentralClient implements Client {
@@ -27,6 +29,7 @@ public class CentralClient implements Client {
                 case "create" -> createGame(params);
                 case "logout" -> logout();
                 case "quit" -> quit();
+                case "list" -> listGames();
 
                 default -> throw new IllegalStateException("Unexpected value: " + cmd);
             };
@@ -58,6 +61,18 @@ public class CentralClient implements Client {
         this.server.logoutUser(authToken);
         repl.changeState(Repl.State.PRELOGIN, serverUrl, null);
         return "Successfully logged out!";
+    }
+
+    private String listGames() throws ResponseException{
+        ArrayList<GameData> result =this.server.listGames(authToken).games();
+        String output="";
+        for(int i=0; i<result.size(); i++){
+            output += String.valueOf(i+1)+". ";
+            output += "Name: " + result.get(i).gameName();
+            output += " Black: " + result.get(i).blackUsername();
+            output += " White: " + result.get(i).whiteUsername() + "\n";
+        }
+        return output;
     }
 
     @Override
