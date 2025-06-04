@@ -6,7 +6,7 @@ import responseexception.ResponseException;
 
 import java.util.Arrays;
 
-public class PreLoginClient implements Client{
+public class PreLoginClient implements Client {
 
     private final String serverUrl;
     private final ServerFacade server;

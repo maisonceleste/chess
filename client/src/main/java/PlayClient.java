@@ -1,6 +1,6 @@
 import responseexception.ResponseException;
 
-public class PlayClient implements Client{
+public class PlayClient implements Client {
 
     private final String serverUrl;
     private final ServerFacade server;

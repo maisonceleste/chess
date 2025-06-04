@@ -2,8 +2,6 @@ import ui.EscapeSequences;
 
 import java.util.Scanner;
 
-import static ui.EscapeSequences.*;
-
 public class Repl {
 
     private Client client;
