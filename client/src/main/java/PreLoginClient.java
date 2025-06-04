@@ -1,5 +1,6 @@
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
+import Results.LoginResult;
 import Results.RegisterResult;
 import responseexception.ResponseException;
 
@@ -26,6 +27,7 @@ public class PreLoginClient implements Client{
             return switch (cmd) {
                 case "help" -> help();
                 case "register" -> registerUser(params);
+                case "login" -> loginUser(params);
 
                 default -> throw new IllegalStateException("Unexpected value: " + cmd);
             };
@@ -48,6 +50,9 @@ public class PreLoginClient implements Client{
     public String loginUser(String... params) throws ResponseException{
         if (params.length == 2) {
             LoginRequest request = new LoginRequest(params[0], params[1]);
+            LoginResult result = server.loginUser(request);
+            repl.changeState(Repl.State.CENTRAL, this.serverUrl, result.authToken());
+            return "Logged in, " + result.username();
         }
         throw new ResponseException(400, "Could not log in. Try login <USERNAME> <PASSWORD>");
     }

@@ -49,6 +49,6 @@ public class CentralClient implements Client {
     }
 
     private String createGame(String... params) throws ResponseException{
-        return "creating the game" + params[0];
+        return "creating the game " + params[0];
     }
 }

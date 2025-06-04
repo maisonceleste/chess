@@ -1,4 +1,6 @@
+import Requests.LoginRequest;
 import Requests.RegisterRequest;
+import Results.LoginResult;
 import Results.RegisterResult;
 import com.google.gson.Gson;
 import responseexception.ResponseException;
@@ -22,6 +24,11 @@ public class ServerFacade {
     public RegisterResult registerUser(RegisterRequest request) throws ResponseException{
         var path = "/user";
         return this.makeRequest("POST", path, request, RegisterResult.class);
+    }
+
+    public LoginResult loginUser(LoginRequest request) throws ResponseException{
+        var path = "/session";
+        return this.makeRequest("POST", path, request, LoginResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
