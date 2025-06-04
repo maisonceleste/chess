@@ -4,6 +4,7 @@ import Facade.ServerFacade;
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
 import Results.CreateResult;
+import Results.ListResult;
 import Results.LoginResult;
 import Results.RegisterResult;
 import org.junit.jupiter.api.*;
@@ -87,6 +88,19 @@ public class ServerFacadeTests {
     public void createNegative() throws ResponseException{
         LoginRequest request = new LoginRequest("newUsername", "newPassword");
         Assertions.assertThrows(ResponseException.class, () -> facade.createGame(null, "Fake auth"));
+    }
+
+    @Test
+    public void listPositive() throws ResponseException{
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        String  auth = facade.loginUser(request).authToken();
+        ListResult result = facade.listGames(auth);
+    }
+
+    @Test
+    public void listNegative() throws ResponseException{
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        Assertions.assertThrows(ResponseException.class, () -> facade.listGames( "Fake auth"));
     }
 
 
