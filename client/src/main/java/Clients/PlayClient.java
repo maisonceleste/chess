@@ -1,3 +1,7 @@
+package Clients;
+
+import Facade.ServerFacade;
+import Repl.Repl;
 import responseexception.ResponseException;
 
 public class PlayClient implements Client {

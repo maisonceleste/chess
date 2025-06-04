@@ -1,3 +1,7 @@
+package Clients;
+
+import Facade.ServerFacade;
+import Repl.Repl;
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
 import Results.LoginResult;

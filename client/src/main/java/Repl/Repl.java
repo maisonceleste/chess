@@ -1,3 +1,9 @@
+package Repl;
+
+import Clients.CentralClient;
+import Clients.Client;
+import Clients.PlayClient;
+import Clients.PreLoginClient;
 import ui.EscapeSequences;
 
 import java.util.Scanner;

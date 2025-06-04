@@ -1,3 +1,5 @@
+package Clients;
+
 import responseexception.ResponseException;
 
 public interface Client {

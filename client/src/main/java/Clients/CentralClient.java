@@ -1,7 +1,11 @@
+package Clients;
+
+import Repl.Repl;
 import Requests.JoinRequest;
 import model.GameData;
 import responseexception.ResponseException;
 import ui.BoardPainter;
+import Facade.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,4 +121,5 @@ public class CentralClient implements Client {
         }
         return "quit";
     }
+
 }

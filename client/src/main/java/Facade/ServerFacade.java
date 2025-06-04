@@ -1,3 +1,5 @@
+package Facade;
+
 import Requests.CreateRequest;
 import Requests.JoinRequest;
 import Requests.LoginRequest;
@@ -17,7 +19,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -27,7 +28,7 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public RegisterResult registerUser(RegisterRequest request) throws ResponseException{
+    public RegisterResult registerUser(RegisterRequest request) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path, request, null, RegisterResult.class);
     }
