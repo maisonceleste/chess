@@ -34,11 +34,12 @@ public class CentralClient implements Client {
                 case "quit" -> quit();
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
+                case "observe" -> observeGame(params);
 
-                default -> throw new IllegalStateException("Unexpected value: " + cmd);
+                default -> throw new IllegalStateException("Uh-oh, that's not a valid command. Try one of these");
             };
         } catch (ResponseException ex) {
-            return ex.getMessage();
+            return ex.getMessage() + help();
         }
     }
 
@@ -90,6 +91,18 @@ public class CentralClient implements Client {
         }
         JoinRequest request = new JoinRequest(params[1], gameList.get(gameNumber).gameID(), authToken);
         this.server.joinGame(request);
+        BoardPainter ui = new BoardPainter(gameList.get(gameNumber).game());
+        return ui.drawWhiteView()+ui.drawBlackView();
+    }
+
+    private String observeGame(String... params){
+        int gameNumber = 0;
+        try{
+            gameNumber = Integer.parseInt(params[0])-1;
+        }
+        catch(NumberFormatException e){
+            return "Please type a number from the game list";
+        }
         BoardPainter ui = new BoardPainter(gameList.get(gameNumber).game());
         return ui.drawWhiteView()+ui.drawBlackView();
     }

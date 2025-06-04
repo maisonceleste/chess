@@ -30,7 +30,7 @@ public class PreLoginClient implements Client {
                 case "login" -> loginUser(params);
                 case "quit" -> quit();
 
-                default -> throw new IllegalStateException("Unexpected value: " + cmd);
+                default -> throw new ResponseException(400, "Uh-oh, that's not a valid command. Try one of these \n" +help());
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
