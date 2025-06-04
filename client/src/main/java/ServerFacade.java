@@ -7,6 +7,7 @@ import Results.ListResult;
 import Results.LoginResult;
 import Results.RegisterResult;
 import com.google.gson.Gson;
+import model.GameData;
 import responseexception.ResponseException;
 
 import java.io.IOException;
@@ -50,6 +51,11 @@ public class ServerFacade {
     public ListResult listGames(String authID) throws ResponseException{
         var path = "/game";
         return this.makeRequest("GET", path, null, authID, ListResult.class);
+    }
+
+    public GameData joinGame(JoinRequest request) throws ResponseException{
+        var path = "/game";
+        return this.makeRequest("PUT", path, request, request.authID(), GameData.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, String authID, Class<T> responseClass) throws ResponseException {

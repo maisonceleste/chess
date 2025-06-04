@@ -80,6 +80,7 @@ public class ChessService {
     }
 
     public boolean join(String color, int gameID, String authID) throws ResponseException{
+        if(color!=null){color = color.toUpperCase();}
         if(color==null||(!color.equals("BLACK") && !color.equals("WHITE"))|| gameID == 0 || authID == null){
             throw new ResponseException(400, "Error: Bad Request");
         }

@@ -1,5 +1,7 @@
+import Requests.JoinRequest;
 import model.GameData;
 import responseexception.ResponseException;
+import ui.BoardPainter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +12,7 @@ public class CentralClient implements Client {
     private final ServerFacade server;
     private final String serverUrl;
     private final Repl repl;
+    private ArrayList<GameData> gameList;
 
     public CentralClient(String serverUrl, Repl repl, String authToken) {
         this.authToken = authToken;
@@ -30,6 +33,7 @@ public class CentralClient implements Client {
                 case "logout" -> logout();
                 case "quit" -> quit();
                 case "list" -> listGames();
+                case "join" -> joinGame(params);
 
                 default -> throw new IllegalStateException("Unexpected value: " + cmd);
             };
@@ -65,6 +69,7 @@ public class CentralClient implements Client {
 
     private String listGames() throws ResponseException{
         ArrayList<GameData> result =this.server.listGames(authToken).games();
+        gameList = result;
         String output="";
         for(int i=0; i<result.size(); i++){
             output += String.valueOf(i+1)+". ";
@@ -73,6 +78,20 @@ public class CentralClient implements Client {
             output += " White: " + result.get(i).whiteUsername() + "\n";
         }
         return output;
+    }
+
+    private String joinGame(String... params) throws ResponseException{
+        int gameNumber = 0;
+        try{
+            gameNumber = Integer.parseInt(params[0])-1;
+        }
+        catch(NumberFormatException e){
+            return "Please type a number from the game list";
+        }
+        JoinRequest request = new JoinRequest(params[1], gameList.get(gameNumber).gameID(), authToken);
+        this.server.joinGame(request);
+        BoardPainter ui = new BoardPainter(gameList.get(gameNumber).game());
+        return ui.drawWhiteView()+ui.drawBlackView();
     }
 
     @Override
