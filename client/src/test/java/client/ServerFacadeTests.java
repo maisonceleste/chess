@@ -46,7 +46,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void logoutPositive() throws ResponseException {
+    public void loginPositive() throws ResponseException {
         LoginRequest request = new LoginRequest("newUsername", "newPassword");
         LoginResult result = facade.loginUser(request);
         LoginResult expected = new LoginResult("newUsername", null);
@@ -58,6 +58,22 @@ public class ServerFacadeTests {
         LoginRequest request = new LoginRequest(null, "newPassword");
         assertThrows(ResponseException.class, () -> facade.loginUser(request));
     }
+
+    @Test
+    public void logoutPositive() throws ResponseException {
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        LoginResult result = facade.loginUser(request);
+        Assertions.assertDoesNotThrow(() -> facade.logoutUser(result.authToken()));
+    }
+
+    @Test
+    public void logoutNegative() throws ResponseException {
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        LoginResult result = facade.loginUser(request);
+        Assertions.assertThrows(ResponseException.class, () -> facade.logoutUser("Fake token"));
+    }
+
+
 
 
 
