@@ -28,6 +28,7 @@ public class PreLoginClient implements Client{
                 case "help" -> help();
                 case "register" -> registerUser(params);
                 case "login" -> loginUser(params);
+                case "quit" -> quit();
 
                 default -> throw new IllegalStateException("Unexpected value: " + cmd);
             };
@@ -66,6 +67,10 @@ public class PreLoginClient implements Client{
                 quit - to leave the program
                 help - to display possible commands
                 """;
+    }
+
+    public String quit() throws ResponseException{
+        return "quit";
     }
 
 

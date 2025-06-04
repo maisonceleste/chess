@@ -1,3 +1,5 @@
+import Requests.CreateRequest;
+import Requests.JoinRequest;
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
 import Results.LoginResult;
@@ -31,15 +33,22 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, LoginResult.class);
     }
 
+    public void logoutUser(String authID) throws ResponseException{
+        var path = "/session";
+        this.makeRequest("DELETE", path, authID, null);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
+            addAuthorizationHeader(request, http);
 
-            writeBody(request, http);
-            http.connect();
+            if (request != null && (method.equals("POST") || method.equals("PUT"))) {
+                http.setDoOutput(true);
+                writeBody(request, http);
+            }
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (ResponseException ex) {
@@ -56,6 +65,17 @@ public class ServerFacade {
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
             }
+        }
+
+    }
+
+    private static void addAuthorizationHeader(Object request, HttpURLConnection http){
+        if (request instanceof String authToken) {
+            http.setRequestProperty("Authorization", authToken);
+        } else if (request instanceof JoinRequest joinRequest) {
+            http.setRequestProperty("Authorization", joinRequest.authID());
+        } else if (request instanceof CreateRequest createRequest) {
+            http.setRequestProperty("Authorization", createRequest.authID());
         }
     }
 

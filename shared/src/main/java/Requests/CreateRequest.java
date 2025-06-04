@@ -1,4 +1,4 @@
 package Requests;
 
-public record CreateRequest(String gameName) {
+public record CreateRequest(String gameName, String authID) {
 }

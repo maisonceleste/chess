@@ -1,3 +1,5 @@
+import responseexception.ResponseException;
+
 public class PlayClient implements Client{
 
     private final String serverUrl;
@@ -20,4 +22,8 @@ public class PlayClient implements Client{
         return "";
     }
 
+    @Override
+    public String quit() throws ResponseException {
+        return "quit";
+    }
 }

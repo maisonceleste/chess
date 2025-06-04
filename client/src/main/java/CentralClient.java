@@ -1,4 +1,3 @@
-import Results.CreateResult;
 import responseexception.ResponseException;
 
 import java.util.Arrays;
@@ -26,6 +25,7 @@ public class CentralClient implements Client {
             return switch (cmd) {
                 case "help" -> help();
                 case "create" -> createGame(params);
+                case "logout" -> logout();
 
                 default -> throw new IllegalStateException("Unexpected value: " + cmd);
             };
@@ -50,5 +50,22 @@ public class CentralClient implements Client {
 
     private String createGame(String... params) throws ResponseException{
         return "creating the game " + params[0];
+    }
+
+    private String logout() throws ResponseException{
+        this.server.logoutUser(authToken);
+        repl.changeState(Repl.State.PRELOGIN, serverUrl, null);
+        return "Successfully logged out!";
+    }
+
+    @Override
+    public String quit() throws ResponseException {
+        try {
+            logout();
+        }
+        catch(ResponseException ex) {
+            throw new ResponseException(400, "Unable to log out. Quitting anyways,");
+        }
+        return "quit";
     }
 }
