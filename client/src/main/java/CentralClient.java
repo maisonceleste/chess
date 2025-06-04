@@ -26,6 +26,7 @@ public class CentralClient implements Client {
                 case "help" -> help();
                 case "create" -> createGame(params);
                 case "logout" -> logout();
+                case "quit" -> quit();
 
                 default -> throw new IllegalStateException("Unexpected value: " + cmd);
             };
@@ -49,7 +50,8 @@ public class CentralClient implements Client {
     }
 
     private String createGame(String... params) throws ResponseException{
-        return "creating the game " + params[0];
+        this.server.createGame(params[0], authToken);
+        return "Successfully created the game, " + params[0];
     }
 
     private String logout() throws ResponseException{

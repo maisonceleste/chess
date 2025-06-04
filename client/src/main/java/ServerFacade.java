@@ -2,6 +2,7 @@ import Requests.CreateRequest;
 import Requests.JoinRequest;
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
+import Results.CreateResult;
 import Results.LoginResult;
 import Results.RegisterResult;
 import com.google.gson.Gson;
@@ -36,6 +37,12 @@ public class ServerFacade {
     public void logoutUser(String authID) throws ResponseException{
         var path = "/session";
         this.makeRequest("DELETE", path, authID, null);
+    }
+
+    public CreateResult createGame(String gameName, String authID) throws ResponseException{
+        var path = "/game";
+        CreateRequest request= new CreateRequest(gameName, authID);
+        return this.makeRequest("POST", path, request, CreateResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
