@@ -1,7 +1,9 @@
 package client;
 
 import Facade.ServerFacade;
+import Requests.LoginRequest;
 import Requests.RegisterRequest;
+import Results.LoginResult;
 import Results.RegisterResult;
 import org.junit.jupiter.api.*;
 import responseexception.ResponseException;
@@ -42,6 +44,22 @@ public class ServerFacadeTests {
         RegisterRequest request = new RegisterRequest(null, "newPassword", "newEmail");
         assertThrows(ResponseException.class, () -> facade.registerUser(request));
     }
+
+    @Test
+    public void logoutPositive() throws ResponseException {
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        LoginResult result = facade.loginUser(request);
+        LoginResult expected = new LoginResult("newUsername", null);
+        Assertions.assertEquals(expected.username(), result.username());
+    }
+
+    @Test
+    public void loginNegative(){
+        LoginRequest request = new LoginRequest(null, "newPassword");
+        assertThrows(ResponseException.class, () -> facade.loginUser(request));
+    }
+
+
 
 
 }
