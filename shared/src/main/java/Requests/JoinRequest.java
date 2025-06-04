@@ -1,4 +1,4 @@
-package server;
+package Requests;
 
 public record JoinRequest(String playerColor, int gameID) {
 }

@@ -1,5 +1,9 @@
 package service;
 
+import Results.CreateResult;
+import Results.ListResult;
+import Results.LoginResult;
+import Results.RegisterResult;
 import org.mindrot.jbcrypt.BCrypt;
 import responseexception.ResponseException;
 import dataaccess.DataAccess;
