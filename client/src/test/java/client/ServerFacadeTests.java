@@ -3,12 +3,14 @@ package client;
 import Facade.ServerFacade;
 import Requests.LoginRequest;
 import Requests.RegisterRequest;
+import Results.CreateResult;
 import Results.LoginResult;
 import Results.RegisterResult;
 import org.junit.jupiter.api.*;
 import responseexception.ResponseException;
 import server.Server;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ServerFacadeTests {
@@ -73,8 +75,19 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, () -> facade.logoutUser("Fake token"));
     }
 
+    @Test
+    public void createPositive() throws ResponseException{
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        String  auth = facade.loginUser(request).authToken();
+        CreateResult result = facade.createGame("newGame"+port, auth);
+        assertNotEquals(0, result.gameID());
+    }
 
-
+    @Test
+    public void createNegative() throws ResponseException{
+        LoginRequest request = new LoginRequest("newUsername", "newPassword");
+        Assertions.assertThrows(ResponseException.class, () -> facade.createGame(null, "Fake auth"));
+    }
 
 
 
