@@ -1,13 +1,13 @@
 package client;
 
-import Facade.ServerFacade;
-import Requests.JoinRequest;
-import Requests.LoginRequest;
-import Requests.RegisterRequest;
-import Results.CreateResult;
-import Results.ListResult;
-import Results.LoginResult;
-import Results.RegisterResult;
+import facade.ServerFacade;
+import requests.JoinRequest;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+import results.CreateResult;
+import results.ListResult;
+import results.LoginResult;
+import results.RegisterResult;
 import model.GameData;
 import org.junit.jupiter.api.*;
 import responseexception.ResponseException;

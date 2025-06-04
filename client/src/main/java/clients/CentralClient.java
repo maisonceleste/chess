@@ -1,11 +1,11 @@
-package Clients;
+package clients;
 
-import Repl.Repl;
-import Requests.JoinRequest;
+import repl.Repl;
+import requests.JoinRequest;
 import model.GameData;
 import responseexception.ResponseException;
 import ui.BoardPainter;
-import Facade.ServerFacade;
+import facade.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.Arrays;

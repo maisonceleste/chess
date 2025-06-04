@@ -1,13 +1,13 @@
-package Facade;
+package facade;
 
-import Requests.CreateRequest;
-import Requests.JoinRequest;
-import Requests.LoginRequest;
-import Requests.RegisterRequest;
-import Results.CreateResult;
-import Results.ListResult;
-import Results.LoginResult;
-import Results.RegisterResult;
+import requests.CreateRequest;
+import requests.JoinRequest;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+import results.CreateResult;
+import results.ListResult;
+import results.LoginResult;
+import results.RegisterResult;
 import com.google.gson.Gson;
 import model.GameData;
 import responseexception.ResponseException;

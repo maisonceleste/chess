@@ -1,9 +1,9 @@
 package service;
 
-import Results.CreateResult;
-import Results.ListResult;
-import Results.LoginResult;
-import Results.RegisterResult;
+import results.CreateResult;
+import results.ListResult;
+import results.LoginResult;
+import results.RegisterResult;
 import dataaccess.MemoryDataAccess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -29,13 +29,7 @@ public class BoardPainter {
         String result = "";
         result += endRows();
         for(int i=8; i>0; i--){
-            result+= boarders + i;
-            for(int j=1; j<=8; j++){
-                String background= squareColorWhite(i,j);
-                result+= background;
-                result+= getSymbol(background, i, j);
-            }
-            result+= boarders + text + i + RESET_BG_COLOR+ "\n";
+            result = fillRow(result, i);
         }
         result+= endRows();
         return result;
@@ -46,15 +40,20 @@ public class BoardPainter {
         String result = "";
         result += endRows();
         for(int i=1; i<9; i++){
-            result+= boarders + i;
-            for(int j=1; j<=8; j++){
-                String background= squareColorWhite(i,j);
-                result+= background;
-                result+= getSymbol(background, i, j);
-            }
-            result+= boarders + text + i + RESET_BG_COLOR+ "\n";
+            result = fillRow(result, i);
         }
         result+= endRows();
+        return result;
+    }
+
+    private String fillRow(String result, int i) {
+        result+= boarders + i;
+        for(int j=1; j<=8; j++){
+            String background= squareColorWhite(i,j);
+            result+= background;
+            result+= getSymbol(background, i, j);
+        }
+        result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         return result;
     }
 

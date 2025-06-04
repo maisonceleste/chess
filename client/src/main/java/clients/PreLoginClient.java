@@ -1,11 +1,11 @@
-package Clients;
+package clients;
 
-import Facade.ServerFacade;
-import Repl.Repl;
-import Requests.LoginRequest;
-import Requests.RegisterRequest;
-import Results.LoginResult;
-import Results.RegisterResult;
+import facade.ServerFacade;
+import repl.Repl;
+import requests.LoginRequest;
+import requests.RegisterRequest;
+import results.LoginResult;
+import results.RegisterResult;
 import responseexception.ResponseException;
 
 import java.util.Arrays;
