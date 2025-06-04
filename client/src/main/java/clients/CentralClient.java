@@ -89,26 +89,34 @@ public class CentralClient implements Client {
         int gameNumber = 0;
         try{
             gameNumber = Integer.parseInt(params[0])-1;
+            if(gameNumber < 1 || gameNumber >= gameList.size()){
+                throw new ResponseException(400, "Number not in list");
+            }
         }
-        catch(NumberFormatException e){
+        catch(Exception e){
             return "Please type a number from the game list";
         }
         JoinRequest request = new JoinRequest(params[1], gameList.get(gameNumber).gameID(), authToken);
         this.server.joinGame(request);
         BoardPainter ui = new BoardPainter(gameList.get(gameNumber).game());
-        return ui.drawWhiteView()+ui.drawBlackView();
+        String color = params[1].toUpperCase();
+        if(color.equals("BLACK")){return ui.drawBlackView();}
+        else{ return ui.drawWhiteView();}
     }
 
     private String observeGame(String... params){
         int gameNumber = 0;
         try{
             gameNumber = Integer.parseInt(params[0])-1;
+            if(gameNumber < 1 || gameNumber >= gameList.size()){
+                throw new ResponseException(400, "Number not in list");
+            }
         }
-        catch(NumberFormatException e){
+        catch(Exception e){
             return "Please type a number from the game list";
         }
         BoardPainter ui = new BoardPainter(gameList.get(gameNumber).game());
-        return ui.drawWhiteView()+ui.drawBlackView();
+        return ui.drawWhiteView();
     }
 
     @Override

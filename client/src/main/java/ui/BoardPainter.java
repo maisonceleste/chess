@@ -27,47 +27,56 @@ public class BoardPainter {
 
     public String drawWhiteView(){
         String result = "";
-        result += endRows();
-        for(int i=8; i>0; i--){
-            result = fillRow(result, i);
+        result += endRowsWhite();
+        for(int i=8; i>=1; i--){
+            result+= boarders + i;
+            for(int j=1; j<=8; j++){
+                String background= squareColor(i,j);
+
+                result+= background;
+                result+= getSymbol(background, i, j);
+            }
+            result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         }
-        result+= endRows();
+        result+= endRowsWhite();
         return result;
 
     }
 
     public String drawBlackView(){
         String result = "";
-        result += endRows();
+        result += endRowsBlack();
         for(int i=1; i<9; i++){
-            result = fillRow(result, i);
+            result+= boarders + i;
+            for(int j=8; j>=1; j--){
+                String background= squareColor(i,j);
+                result+= background;
+                result+= getSymbol(background, i, j);
+            }
+            result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         }
-        result+= endRows();
+        result+= endRowsBlack();
         return result;
     }
 
-    private String fillRow(String result, int i) {
-        result+= boarders + i;
-        for(int j=1; j<=8; j++){
-            String background= squareColorWhite(i,j);
-            result+= background;
-            result+= getSymbol(background, i, j);
-        }
-        result+= boarders + text + i + RESET_BG_COLOR+ "\n";
-        return result;
-    }
 
     public void updateGame(ChessGame game){
         this.board = game.getBoard();
     }
 
-    private String endRows(){
+    private String endRowsWhite(){
         String row =  boarders + text + "  A  B  C  D  E  F  G  H  " ;
         row+= RESET_BG_COLOR + "\n";
         return row;
     }
 
-    private String squareColorWhite(int i, int j){
+    private String endRowsBlack(){
+        String row =  boarders + text + "  H  G  F  E  D  C  B  A  " ;
+        row+= RESET_BG_COLOR + "\n";
+        return row;
+    }
+
+    private String squareColor(int i, int j){
         if(i%2 == j%2f){
             return dark;
         }
