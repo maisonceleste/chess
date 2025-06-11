@@ -119,9 +119,6 @@ public class Server {
         String playerColor = data.playerColor();
         int gameID = data.gameID();
         service.join(playerColor, gameID, auth);
-        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, auth, gameID, null);
-        webSocketHandler.connect();
-
         res.type("application/json");
         return "{}";
     }
