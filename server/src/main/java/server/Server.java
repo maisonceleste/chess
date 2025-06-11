@@ -12,16 +12,20 @@ import dataaccess.MySqlDataAccess;
 import responseexception.ResponseException;
 import com.google.gson.Gson;
 import dataaccess.MemoryDataAccess;
+import server.websocket.WebSocketHandler;
 import service.*;
 import spark.*;
+import websocket.commands.UserGameCommand;
 
 public class Server {
 
     ChessService service;
+    private WebSocketHandler webSocketHandler;
 
     public Server(){
         try {
             this.service = new ChessService(new MySqlDataAccess());
+            webSocketHandler = new WebSocketHandler();
         } catch (ResponseException e) {
             System.out.println("Could not open MySQL server :( use memory instead");
             this.service = new ChessService(new MemoryDataAccess());;
@@ -32,6 +36,8 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
@@ -113,6 +119,9 @@ public class Server {
         String playerColor = data.playerColor();
         int gameID = data.gameID();
         service.join(playerColor, gameID, auth);
+        UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, auth, gameID, null);
+        webSocketHandler.connect();
+
         res.type("application/json");
         return "{}";
     }
