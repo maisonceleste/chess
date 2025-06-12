@@ -41,7 +41,8 @@ public class PlayClient implements Client {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "help" -> help();
-
+                case "redraw" -> redraw();
+                case "leave" -> leave();
                 default -> throw new IllegalStateException("Uh-oh, that's not a valid command. Try one of these");
             };
 //        } catch (ResponseException ex) {
@@ -55,32 +56,38 @@ public class PlayClient implements Client {
     public String help(){
         return """
                 You are currently playing chess
-                help
-                redraw
-                leave
-                move
-                resign
-                highlight
+                redraw - to redraw the current state of the chess board
+                leave - to exit the game
+                move <start position> <end position> - to make a move
+                resign - to forfeit the game
+                highlight <position> - to show every possible move a piece can make
+                help - to display possible commands
                 """;
     }
 
     public void setGame(ChessGame.TeamColor color, String authToken, int gameID){
-        this.color = color;
+        this.color = color ;;
         this.authToken = authToken;
         this.gameID = gameID;
     }
 
     public String connect(JoinRequest request) throws ResponseException {
         ws.joinGame(authToken, gameID, request);
-        String color = request.playerColor();
         String board;
-        if(color.equals("BLACK")){board = ui.drawBlackView();}
+        if(color!=null && color.equals(ChessGame.TeamColor.BLACK)){board = ui.drawBlackView();}
         else{ board = ui.drawWhiteView();}
         return board + String.format("\nJoined the game as %s", request.playerColor());
     }
 
+    public String redraw(){
+        String board;
+        if(color!=null && color.equals(ChessGame.TeamColor.BLACK)){board = ui.drawBlackView();}
+        else{ board = ui.drawWhiteView();}
+        return board;
+    }
+
     @Override
     public String quit() throws ResponseException {
-        return "quit";
+        return "you must leave the game before you can quit";
     }
 }

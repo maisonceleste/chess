@@ -89,7 +89,7 @@ public class CentralClient implements Client {
         int gameNumber = 0;
         try{
             gameNumber = Integer.parseInt(params[0])-1;
-            if(gameNumber < 1 || gameNumber >= gameList.size()){
+            if(gameNumber < 0 || gameNumber >= gameList.size()){
                 throw new ResponseException(400, "Number not in list");
             }
         }
@@ -111,7 +111,7 @@ public class CentralClient implements Client {
         int gameNumber = 0;
         try{
             gameNumber = Integer.parseInt(params[0])-1;
-            if(gameNumber < 1 || gameNumber >= gameList.size()){
+            if(gameNumber < 0 || gameNumber >= gameList.size()){
                 throw new ResponseException(400, "Number not in list");
             }
         }
