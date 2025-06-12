@@ -13,6 +13,7 @@ import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -34,31 +35,30 @@ public class WebSocketHandler {
     }
 
     public void connect(String authToken, int gameID, Object request, Session session) throws IOException {
-        if(!(request instanceof JoinRequest)){
-            throw new IOException("Failed to join the game");
-        }
-        JoinRequest joinRequest = (JoinRequest) request;
         connections.add(authToken, gameID, session);
         GameData game = null;
         String message = null;
         try{
             game = service.getGame(gameID);
-            message = joinMessage(joinRequest, game);
+            String username = service.getUser(authToken);
+            message = joinMessage(username, game);
         }
         catch( ResponseException ex) {throw new IOException();}
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(authToken, serverMessage);
+        ServerMessage loadMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+        connections.broadcastBack(authToken, loadMessage);
     }
 
-    private String joinMessage(JoinRequest request, GameData game) throws ResponseException {
-        if(request.playerColor().equalsIgnoreCase("BLACK")){
+    private String joinMessage(String username, GameData game) throws ResponseException {
+        if(Objects.equals(game.blackUsername(), username)){
             return game.blackUsername() + " has joined the game as black";
         }
-        else if(request.playerColor().equalsIgnoreCase("WHITE")){
+        else if(Objects.equals(game.whiteUsername(), username)){
             return game.whiteUsername() + " has joined the game as white";
         }
         else{
-            return service.getUser(request.authID()) + " is observing the game";
+            return username + " is observing the game";
         }
     }
 
