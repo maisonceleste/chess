@@ -10,6 +10,7 @@ import static ui.EscapeSequences.*;
 
 
 public class BoardPainter {
+    private ChessGame game;
     private ChessBoard board;
     private String boarders;
     private String dark;
@@ -17,6 +18,7 @@ public class BoardPainter {
     private String text;
 
     public BoardPainter(ChessGame game){
+        this.game = game;
         this.board = game.getBoard();
         this.boarders= EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
         this.dark = EscapeSequences.SET_BG_COLOR_BLACK;
@@ -44,6 +46,22 @@ public class BoardPainter {
     }
 
     public String drawBlackView(){
+        String result = "";
+        result += endRowsBlack();
+        for(int i=1; i<9; i++){
+            result+= boarders + i;
+            for(int j=8; j>=1; j--){
+                String background= squareColor(i,j);
+                result+= background;
+                result+= getSymbol(background, i, j);
+            }
+            result+= boarders + text + i + RESET_BG_COLOR+ "\n";
+        }
+        result+= endRowsBlack();
+        return result+RESET_TEXT_COLOR;
+    }
+
+    public String highlightMovesBlack(ChessPosition startPosition){
         String result = "";
         result += endRowsBlack();
         for(int i=1; i<9; i++){

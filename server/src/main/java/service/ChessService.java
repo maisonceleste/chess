@@ -97,15 +97,13 @@ public class ChessService {
         return true;
     }
 
-    public void leave(String color, int gameID, String authID) throws ResponseException {
-        if(color!=null){color = color.toUpperCase();}
-        if(color==null||(!color.equals("BLACK") && !color.equals("WHITE"))|| gameID == 0 || authID == null){
-            throw new ResponseException(400, "Error: Bad Request");
-        }
-        AuthData auth = dataAccess.getAuth(authID);
-        if(auth==null){
-            throw new ResponseException(401, "Error: Unauthorized");
-        }
+    public void leave(int gameID, String authID) throws ResponseException {
+        GameData game = dataAccess.getGame(gameID);
+        String username = getUser(authID);
+        String color = null;
+        if(game.blackUsername()!=null && game.blackUsername().equals(username)){color="BLACK";}
+        else if(game.whiteUsername()!=null && game.whiteUsername().equals(username)){color="WHITE";}
+        else{return;}
         dataAccess.updateGame(color, gameID, null);
     }
 
@@ -114,6 +112,9 @@ public class ChessService {
     }
 
     public String getUser(String authID) throws ResponseException {
+        if(dataAccess.getAuth(authID)==null){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
         return dataAccess.getAuth(authID).username();
     }
 
