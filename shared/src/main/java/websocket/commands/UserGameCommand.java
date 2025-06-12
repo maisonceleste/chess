@@ -18,13 +18,13 @@ public class UserGameCommand {
 
     private final Integer gameID;
 
-    private final Object request;
+    private final ChessMove move;
 
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, Object request) {
+    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, ChessMove move) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
-        this.request = request;
+        this.move = move;
     }
 
     public enum CommandType {
@@ -46,7 +46,7 @@ public class UserGameCommand {
         return gameID;
     }
 
-    public Object getRequest() { return request;}
+    public Object getMove() { return move;}
 
     @Override
     public boolean equals(Object o) {

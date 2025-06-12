@@ -159,6 +159,14 @@ public class MySqlDataAccess implements DataAccess{
         return getGame(gameID);
     }
 
+    @Override
+    public void updateMove(ChessGame newGame, int gameID) throws ResponseException {
+        String column = "game";
+        var statement = "UPDATE games SET " + column + " = ? WHERE gameID = ?";
+        String serializedGame = new Gson().toJson(newGame);
+        int id = executeGameUpdate(statement, serializedGame, gameID);
+    }
+
     private void executeUpdate(String statement, Object... params) throws ResponseException {
         try (var conn = DatabaseManager.getConnection()) {
             var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS);

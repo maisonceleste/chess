@@ -1,10 +1,10 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import model.GameData;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
@@ -62,12 +62,23 @@ public class BoardPainter {
     }
 
     public String highlightMovesBlack(ChessPosition startPosition){
+        Collection<ChessPosition> endPositions = getMoves(startPosition);
         String result = "";
         result += endRowsBlack();
         for(int i=1; i<9; i++){
             result+= boarders + i;
             for(int j=8; j>=1; j--){
-                String background= squareColor(i,j);
+                ChessPosition currentPosition = new ChessPosition(i,j);
+                String background;
+                if(endPositions.contains(currentPosition)){
+                    background = highlightSquareColor(i,j);
+                }
+                else if(currentPosition.equals(startPosition)){
+                    background = SET_BG_COLOR_YELLOW;
+                }
+                else{
+                    background= squareColor(i,j);
+                }
                 result+= background;
                 result+= getSymbol(background, i, j);
             }
@@ -75,6 +86,43 @@ public class BoardPainter {
         }
         result+= endRowsBlack();
         return result+RESET_TEXT_COLOR;
+    }
+
+    public String highlightMovesWhite(ChessPosition startPosition){
+        Collection<ChessPosition> endPositions = getMoves(startPosition);
+        String result = "";
+        result += endRowsWhite();
+        for(int i=8; i>=1; i--){
+            result+= boarders + i;
+            for(int j=1; j<=8; j++){
+                ChessPosition currentPosition = new ChessPosition(i,j);
+                String background;
+                if(endPositions.contains(currentPosition)){
+                    background = highlightSquareColor(i,j);
+                }
+                else if(currentPosition.equals(startPosition)){
+                    background = SET_BG_COLOR_YELLOW;
+                }
+                else{
+                    background= squareColor(i,j);
+                }
+                result+= background;
+                result+= getSymbol(background, i, j);
+            }
+            result+= boarders + text + i + RESET_BG_COLOR+ "\n";
+        }
+        result+= endRowsWhite();
+        return result+RESET_TEXT_COLOR;
+    }
+
+
+    private Collection<ChessPosition>getMoves(ChessPosition position){
+        Collection<ChessMove> moves = game.validMoves(position);
+        Collection<ChessPosition> endPositions = new ArrayList<>();
+        for(ChessMove move : moves){
+            endPositions.add(move.getEndPosition());
+        }
+        return endPositions;
     }
 
 
@@ -101,6 +149,11 @@ public class BoardPainter {
         else{
             return light;
         }
+    }
+
+    private String highlightSquareColor(int i, int j){
+        if(squareColor(i,j).equals(dark)){return SET_BG_COLOR_DARK_GREEN;}
+        else{return SET_BG_COLOR_GREEN;}
     }
 
     private String getSymbol(String background, int i, int j){

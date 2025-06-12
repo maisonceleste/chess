@@ -101,12 +101,9 @@ public class CentralClient implements Client {
         this.server.joinGame(request);
         repl.changeState(Repl.State.PLAY, this.serverUrl, authToken);
         PlayClient client = (PlayClient) repl.getClient();
-        client.setGame(getTeamColor(request.playerColor()), request.authID(), request.gameID());
+        client.setGame(getTeamColor(request.playerColor()), request.authID(), request.gameID(), gameList.get(gameNumber).game());
         client.ui = new BoardPainter(gameList.get(gameNumber).game());
         return client.connect(request);
-//        String color = params[1].toUpperCase();
-//        if(color.equals("BLACK")){return ui.drawBlackView();}
-//        else{ return ui.drawWhiteView();}
     }
 
     private ChessGame.TeamColor getTeamColor(String string){

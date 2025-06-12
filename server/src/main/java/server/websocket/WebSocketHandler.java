@@ -1,5 +1,8 @@
 package server.websocket;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPiece;
 import com.google.gson.Gson;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
@@ -24,7 +27,7 @@ public class WebSocketHandler {
         switch (command.getCommandType()) {
             case CONNECT -> connect(command.getAuthToken(), command.getGameID(), session);
             case LEAVE -> leave(command.getAuthToken(), command.getGameID(), session);
-            //case MAKE_MOVE -> makeMove(action.visitorName());
+            case MAKE_MOVE -> makeMove(command.getAuthToken(), command.getGameID(), (ChessMove) command.getMove(), session);
         }
     }
 
@@ -82,9 +85,41 @@ public class WebSocketHandler {
         catch( ResponseException ex) {throw new IOException(ex);}
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(authToken, serverMessage);
-//        message = "You have successfully left the game";
-//        serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-//        connections.broadcastBack(authToken, serverMessage);
+    }
+
+    public void makeMove(String authToken, int gameID, ChessMove move, Session session) throws IOException {
+        GameData game = null;
+        try{
+            String username = service.getUser(authToken);
+            service.updateMove(gameID, move);
+            game = service.getGame(gameID);
+            if(!Objects.equals(game.whiteUsername(), username) && !Objects.equals(game.blackUsername(), username)){
+                throw new ResponseException(400, "You are observer");
+            }
+            if(checkTurn(username, game)){throw new ResponseException(400, "Not your turn");}
+        } catch (ResponseException e) {
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null , "Failed to implement move");
+            session.getRemote().sendString(new Gson().toJson(serverMessage));
+            return;
+        }
+        ServerMessage loadMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
+        connections.broadcastAll(loadMessage);
+        ChessGame.TeamColor next = game.game().getTeamTurn();
+        String last = (next == ChessGame.TeamColor.WHITE) ? game.blackUsername() : game.whiteUsername();
+        ChessPiece.PieceType piece = game.game().getBoard().getPiece(move.getEndPosition()).getPieceType();
+        String message = String.format("%s just moved %s. Next turn: %s", last, next, piece);
+        ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(authToken, serverMessage);
+    }
+
+    private boolean checkTurn(String username, GameData game){
+        ChessGame.TeamColor currentTurn = game.game().getTeamTurn();
+        if(currentTurn == ChessGame.TeamColor.WHITE){
+            return Objects.equals(username, game.whiteUsername());
+        }
+        else{
+            return Objects.equals(username, game.blackUsername());
+        }
     }
 
 }

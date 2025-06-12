@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import responseexception.ResponseException;
 
 import java.util.*;
 
@@ -84,5 +85,10 @@ public class MemoryDataAccess implements DataAccess{
         games.remove(gameID);
         games.put(gameID, newGame);
         return newGame;
+    }
+
+    @Override
+    public void updateMove(ChessGame newGame, int gameID) throws ResponseException {
+        return;
     }
 }

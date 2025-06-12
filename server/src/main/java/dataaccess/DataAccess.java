@@ -34,4 +34,5 @@ public interface DataAccess {
     GameData updateGame(String color, int gameID, String username) throws ResponseException;
 
 
+    void updateMove(ChessGame newGame, int gameID) throws ResponseException;
 }

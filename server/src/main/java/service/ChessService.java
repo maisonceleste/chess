@@ -1,5 +1,8 @@
 package service;
 
+import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import results.CreateResult;
 import results.ListResult;
 import results.LoginResult;
@@ -105,6 +108,16 @@ public class ChessService {
         else if(game.whiteUsername()!=null && game.whiteUsername().equals(username)){color="WHITE";}
         else{return;}
         dataAccess.updateGame(color, gameID, null);
+    }
+
+    public void updateMove(int gameID, ChessMove move) throws ResponseException {
+        ChessGame game = getGame(gameID).game();
+        try {
+            game.makeMove(move);
+        } catch (InvalidMoveException e) {
+            throw new ResponseException(400, "You can't make this move");
+        }
+        dataAccess.updateMove(game, gameID);
     }
 
     public GameData getGame(int gameID) throws ResponseException {
