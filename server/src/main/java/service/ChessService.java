@@ -97,6 +97,26 @@ public class ChessService {
         return true;
     }
 
+    public void leave(String color, int gameID, String authID) throws ResponseException {
+        if(color!=null){color = color.toUpperCase();}
+        if(color==null||(!color.equals("BLACK") && !color.equals("WHITE"))|| gameID == 0 || authID == null){
+            throw new ResponseException(400, "Error: Bad Request");
+        }
+        AuthData auth = dataAccess.getAuth(authID);
+        if(auth==null){
+            throw new ResponseException(401, "Error: Unauthorized");
+        }
+        dataAccess.updateGame(color, gameID, null);
+    }
+
+    public GameData getGame(int gameID) throws ResponseException {
+        return dataAccess.getGame(gameID);
+    }
+
+    public String getUser(String authID) throws ResponseException {
+        return dataAccess.getAuth(authID).username();
+    }
+
     private String encryptPassword(String clearTextPassword){
         return BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
     }

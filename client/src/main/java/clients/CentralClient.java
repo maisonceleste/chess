@@ -1,5 +1,6 @@
 package clients;
 
+import chess.ChessGame;
 import repl.Repl;
 import requests.JoinRequest;
 import model.GameData;
@@ -100,11 +101,20 @@ public class CentralClient implements Client {
         this.server.joinGame(request);
         repl.changeState(Repl.State.PLAY, this.serverUrl, authToken);
         PlayClient client = (PlayClient) repl.getClient();
+        client.setGame(getTeamColor(request.playerColor()), request.authID(), request.gameID());
         client.ui = new BoardPainter(gameList.get(gameNumber).game());
         return client.connect(request);
 //        String color = params[1].toUpperCase();
 //        if(color.equals("BLACK")){return ui.drawBlackView();}
 //        else{ return ui.drawWhiteView();}
+    }
+
+    private ChessGame.TeamColor getTeamColor(String string){
+        return switch(string.toUpperCase()){
+            case "BLACK" -> ChessGame.TeamColor.BLACK;
+            case "WHITE" -> ChessGame.TeamColor.WHITE;
+            default -> null;
+        };
     }
 
     private String observeGame(String... params){

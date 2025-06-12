@@ -26,6 +26,7 @@ public class Server {
         try {
             this.service = new ChessService(new MySqlDataAccess());
             webSocketHandler = new WebSocketHandler();
+            webSocketHandler.setService(service);
         } catch (ResponseException e) {
             System.out.println("Could not open MySQL server :( use memory instead");
             this.service = new ChessService(new MemoryDataAccess());;
@@ -49,7 +50,7 @@ public class Server {
         Spark.put("/game", this::join);
         Spark.exception(ResponseException.class, this::exceptionHandler);
         //This line initializes the server and can be removed once you have a functioning endpoint
-
+        Spark.init();
         Spark.awaitInitialization();
         return Spark.port();
     }

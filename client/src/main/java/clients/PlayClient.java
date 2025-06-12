@@ -43,12 +43,11 @@ public class PlayClient implements Client {
                 case "help" -> help();
                 case "redraw" -> redraw();
                 case "leave" -> leave();
+                case "quit" -> quit();
                 default -> throw new IllegalStateException("Uh-oh, that's not a valid command. Try one of these");
             };
-//        } catch (ResponseException ex) {
-//            return ex.getMessage() + help();
-        } finally {
-
+        } catch (ResponseException ex) {
+            return ex.getMessage() + help();
         }
     }
 
@@ -66,7 +65,7 @@ public class PlayClient implements Client {
     }
 
     public void setGame(ChessGame.TeamColor color, String authToken, int gameID){
-        this.color = color ;;
+        this.color = color ;
         this.authToken = authToken;
         this.gameID = gameID;
     }
@@ -84,6 +83,14 @@ public class PlayClient implements Client {
         if(color!=null && color.equals(ChessGame.TeamColor.BLACK)){board = ui.drawBlackView();}
         else{ board = ui.drawWhiteView();}
         return board;
+    }
+
+    public String leave() throws ResponseException {
+        JoinRequest request = new JoinRequest(color.toString(), gameID, authToken);
+        ws.leaveGame(authToken, gameID, request);
+        repl.changeState(Repl.State.CENTRAL, this.serverUrl, authToken);
+        return "You have left the game";
+
     }
 
     @Override
