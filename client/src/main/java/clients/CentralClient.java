@@ -98,10 +98,13 @@ public class CentralClient implements Client {
         }
         JoinRequest request = new JoinRequest(params[1], gameList.get(gameNumber).gameID(), authToken);
         this.server.joinGame(request);
-        BoardPainter ui = new BoardPainter(gameList.get(gameNumber).game());
-        String color = params[1].toUpperCase();
-        if(color.equals("BLACK")){return ui.drawBlackView();}
-        else{ return ui.drawWhiteView();}
+        repl.changeState(Repl.State.PLAY, this.serverUrl, authToken);
+        PlayClient client = (PlayClient) repl.getClient();
+        client.ui = new BoardPainter(gameList.get(gameNumber).game());
+        return client.connect(request);
+//        String color = params[1].toUpperCase();
+//        if(color.equals("BLACK")){return ui.drawBlackView();}
+//        else{ return ui.drawWhiteView();}
     }
 
     private String observeGame(String... params){

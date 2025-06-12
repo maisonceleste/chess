@@ -39,7 +39,7 @@ public class BoardPainter {
             result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         }
         result+= endRowsWhite();
-        return result;
+        return result+RESET_TEXT_COLOR;
 
     }
 
@@ -56,7 +56,7 @@ public class BoardPainter {
             result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         }
         result+= endRowsBlack();
-        return result;
+        return result+RESET_TEXT_COLOR;
     }
 
 

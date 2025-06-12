@@ -4,7 +4,9 @@ import clients.CentralClient;
 import clients.Client;
 import clients.PlayClient;
 import clients.PreLoginClient;
+import responseexception.ResponseException;
 import ui.EscapeSequences;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
@@ -49,7 +51,7 @@ public class Repl {
         System.out.print("\n" + EscapeSequences.RESET_TEXT_COLOR + ">>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
     }
 
-    public void changeState (Repl.State newState, String serverUrl, String auth){
+    public void changeState (Repl.State newState, String serverUrl, String auth) throws ResponseException {
         switch (newState){
             case State.PRELOGIN -> this.client = new PreLoginClient(serverUrl, this);
             case State.CENTRAL -> this.client = new CentralClient(serverUrl, this, auth);
@@ -57,4 +59,14 @@ public class Repl {
         }
         System.out.println(client.help());
     }
+
+    public void notify(ServerMessage notification) {
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + notification.getMessage());
+        printPrompt();
+    }
+
+    public Client getClient(){
+        return client;
+    }
+
 }
