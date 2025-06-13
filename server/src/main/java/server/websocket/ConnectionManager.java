@@ -65,12 +65,4 @@ public class ConnectionManager {
         }
     }
 
-//    public void broadcastBack(String authToken, ServerMessage serverMessage) throws IOException {
-//        String message = new Gson().toJson(serverMessage);
-//        var connection = connections.get(authToken);
-//        if (connection.session.isOpen()) {
-//            connection.send(message);
-//        }
-//
-//    }
 }

@@ -68,19 +68,7 @@ public class BoardPainter {
         for(int i=1; i<9; i++){
             result+= boarders + i;
             for(int j=8; j>=1; j--){
-                ChessPosition currentPosition = new ChessPosition(i,j);
-                String background;
-                if(endPositions.contains(currentPosition)){
-                    background = highlightSquareColor(i,j);
-                }
-                else if(currentPosition.equals(startPosition)){
-                    background = SET_BG_COLOR_YELLOW;
-                }
-                else{
-                    background= squareColor(i,j);
-                }
-                result+= background;
-                result+= getSymbol(background, i, j);
+                result = paintHighlights(startPosition, endPositions, result, i, j);
             }
             result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         }
@@ -95,24 +83,29 @@ public class BoardPainter {
         for(int i=8; i>=1; i--){
             result+= boarders + i;
             for(int j=1; j<=8; j++){
-                ChessPosition currentPosition = new ChessPosition(i,j);
-                String background;
-                if(endPositions.contains(currentPosition)){
-                    background = highlightSquareColor(i,j);
-                }
-                else if(currentPosition.equals(startPosition)){
-                    background = SET_BG_COLOR_YELLOW;
-                }
-                else{
-                    background= squareColor(i,j);
-                }
-                result+= background;
-                result+= getSymbol(background, i, j);
+                result = paintHighlights(startPosition, endPositions, result, i, j);
             }
             result+= boarders + text + i + RESET_BG_COLOR+ "\n";
         }
         result+= endRowsWhite();
         return result+RESET_TEXT_COLOR;
+    }
+
+    private String paintHighlights(ChessPosition startPosition, Collection<ChessPosition> endPositions, String result, int i, int j) {
+        ChessPosition currentPosition = new ChessPosition(i,j);
+        String background;
+        if(endPositions.contains(currentPosition)){
+            background = highlightSquareColor(i,j);
+        }
+        else if(currentPosition.equals(startPosition)){
+            background = SET_BG_COLOR_YELLOW;
+        }
+        else{
+            background= squareColor(i,j);
+        }
+        result+= background;
+        result+= getSymbol(background, i, j);
+        return result;
     }
 
 
