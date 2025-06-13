@@ -28,6 +28,7 @@ public class WebSocketHandler {
             case CONNECT -> connect(command.getAuthToken(), command.getGameID(), session);
             case LEAVE -> leave(command.getAuthToken(), command.getGameID(), session);
             case MAKE_MOVE -> makeMove(command.getAuthToken(), command.getGameID(), (ChessMove) command.getMove(), session);
+            case RESIGN -> resign(command.getAuthToken(), command.getGameID(), session);
         }
     }
 
@@ -48,13 +49,13 @@ public class WebSocketHandler {
         }
         catch( ResponseException ex) {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null , "Error; could not access game");
-            connections.broadcastBack(authToken, serverMessage);
+            session.getRemote().sendString(new Gson().toJson(serverMessage));
             return;
         }
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(authToken, serverMessage);
+        connections.broadcast(gameID, authToken, serverMessage);
         ServerMessage loadMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
-        connections.broadcastBack(authToken, loadMessage);
+        session.getRemote().sendString(new Gson().toJson(loadMessage));
     }
 
     private String joinMessage(String username, GameData game) throws ResponseException {
@@ -74,22 +75,48 @@ public class WebSocketHandler {
         service.leave(gameID, authToken);
         } catch (ResponseException e) {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null , "Error; could not access game");
-            connections.broadcastBack(authToken, serverMessage);
+            session.getRemote().sendString(new Gson().toJson(serverMessage));
             return;
         }
-        connections.remove(authToken);
+        connections.remove(authToken, gameID);
         String message = null;
         try{
             message = service.getUser(authToken) + " has left the game";
         }
         catch( ResponseException ex) {throw new IOException(ex);}
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(authToken, serverMessage);
+        connections.broadcast(gameID, authToken, serverMessage);
+    }
+
+    public void resign(String authToken, int gameID, Session session) throws IOException {
+        GameData game = null;
+        String username;
+        try{
+            game = service.getGame(gameID);
+            if(game.game() == null){
+                throw new ResponseException(400, "The game is already over");
+            }
+            username = service.getUser(authToken);
+            service.resign(gameID, username);
+            game = service.getGame(gameID);
+            if(!Objects.equals(game.whiteUsername(), username) && !Objects.equals(game.blackUsername(), username)){
+                throw new ResponseException(400, "You are observer");
+            }
+        } catch (ResponseException e) {
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null , "You can't resign");
+            session.getRemote().sendString(new Gson().toJson(serverMessage));
+            return;
+        }
+        String message = String.format("%s just moved resigned", username);
+        ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcastAll(gameID, serverMessage);
     }
 
     public void makeMove(String authToken, int gameID, ChessMove move, Session session) throws IOException {
         GameData game = null;
         try{
+            game = service.getGame(gameID);
+            if(game.game()==null){throw new ResponseException(400, "The game is over");}
             String username = service.getUser(authToken);
             service.updateMove(gameID, move);
             game = service.getGame(gameID);
@@ -97,19 +124,20 @@ public class WebSocketHandler {
                 throw new ResponseException(400, "You are observer");
             }
             if(checkTurn(username, game)){throw new ResponseException(400, "Not your turn");}
+
         } catch (ResponseException e) {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR, null , "Failed to implement move");
             session.getRemote().sendString(new Gson().toJson(serverMessage));
             return;
         }
         ServerMessage loadMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game);
-        connections.broadcastAll(loadMessage);
+        connections.broadcastAll(gameID, loadMessage);
         ChessGame.TeamColor next = game.game().getTeamTurn();
         String last = (next == ChessGame.TeamColor.WHITE) ? game.blackUsername() : game.whiteUsername();
         ChessPiece.PieceType piece = game.game().getBoard().getPiece(move.getEndPosition()).getPieceType();
         String message = String.format("%s just moved %s. Next turn: %s", last, next, piece);
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(authToken, serverMessage);
+        connections.broadcast(gameID, authToken, serverMessage);
     }
 
     private boolean checkTurn(String username, GameData game){

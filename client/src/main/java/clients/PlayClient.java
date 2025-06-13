@@ -51,6 +51,7 @@ public class PlayClient implements Client {
                 case "move" -> move(params);
                 case "quit" -> quit();
                 case "highlight" -> highlight(params);
+                case "resign" -> resign();
                 default -> throw new IllegalStateException("Uh-oh, that's not a valid command. Try one of these");
             };
         } catch (ResponseException ex) {
@@ -100,13 +101,19 @@ public class PlayClient implements Client {
         return "You have left the game";
     }
 
-    public void move(String... params) throws ResponseException {
+    public String move(String... params) throws ResponseException {
         if(color != game.getTeamTurn()){throw new ResponseException(500, "It is not your turn");}
         ChessPosition startPosition = positionTranslator(params[0].toLowerCase());
         ChessPosition endPosition = positionTranslator(params[1].toLowerCase());
         ChessPiece.PieceType promotion = ChessPiece.PieceType.valueOf(params[2]);
         ChessMove move = new ChessMove(startPosition, endPosition, promotion);
         ws.makeMove(authToken, gameID, move);
+        return "making move";
+    }
+
+    public String resign() throws ResponseException {
+        ws.resign(authToken, gameID);
+        return "You have resigned";
     }
 
     public String highlight(String... params) throws ResponseException {

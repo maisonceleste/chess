@@ -120,6 +120,10 @@ public class ChessService {
         dataAccess.updateMove(game, gameID);
     }
 
+    public void resign(int gameID, String username) throws ResponseException{
+        dataAccess.updateMove(null, gameID);
+    }
+
     public GameData getGame(int gameID) throws ResponseException {
         return dataAccess.getGame(gameID);
     }

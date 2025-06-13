@@ -48,7 +48,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void joinGame(String authToken, int gameID, JoinRequest request) throws ResponseException {
         try {
-            var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, request);
+            var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch(IOException ex){
             throw new ResponseException(500, ex.getMessage());
@@ -66,10 +66,19 @@ public class WebSocketFacade extends Endpoint {
 
     public void leaveGame(String authToken, int gameID, JoinRequest request)throws ResponseException{
         try {
-            var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, request);
+            var command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID, null);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
             this.session.close();
         } catch(IOException ex){
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void resign(String authToken, int gameID) throws ResponseException {
+        try {
+            var command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID, null);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }
     }
